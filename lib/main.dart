@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music_app/core/configs/theme/app_theme.dart';
 import 'package:music_app/firebase_options.dart';
 import 'package:music_app/presentation/chooseTheme/bloc/theme_cubit.dart';
+import 'package:music_app/presentation/dashboard/bloc/navigation_cubit.dart';
 import 'package:music_app/presentation/dashboard/pages/dashboard.dart';
+import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
 import 'package:music_app/presentation/register/bloc/loading/loading_bloc.dart';
 import 'package:music_app/services.dart';
 
@@ -25,6 +27,8 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => ThemeCubit()),
         BlocProvider(create: (_) => sl<LoadingBloc>()),
+        BlocProvider(create: (_) => sl<NavigationCubit>()),
+        BlocProvider(create: (_) => sl<AllSongsBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder:
