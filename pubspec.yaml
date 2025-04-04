@@ -42,6 +42,7 @@ dependencies:
   dartz:
   cloud_firestore:
   equatable:
+  audioplayers:
 
 dev_dependencies:
   flutter_test:

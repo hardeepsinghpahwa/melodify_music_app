@@ -1,4 +1,5 @@
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:get_it/get_it.dart';
 import 'package:music_app/data/datasources/auth_firebase_service.dart';
 import 'package:music_app/data/datasources/song_firebase_service.dart';
@@ -11,6 +12,8 @@ import 'package:music_app/domain/usecases/signInUseCase.dart';
 import 'package:music_app/domain/usecases/signUpUseCase.dart';
 import 'package:music_app/presentation/dashboard/bloc/navigation_cubit.dart';
 import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
+import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
+import 'package:music_app/presentation/player/bloc/player_state/player_state_cubit.dart';
 import 'package:music_app/presentation/register/bloc/loading/loading_bloc.dart';
 
 final sl=GetIt.instance;
@@ -36,5 +39,11 @@ Future<void> initDependencies() async{
   sl.registerSingleton<AllSongsBloc>(AllSongsBloc());
 
   sl.registerSingleton<GetAllSongsUseCase>(GetAllSongsUseCase());
+
+  sl.registerSingleton<AudioPlayer>(AudioPlayer());
+
+  sl.registerSingleton<PlayerStateCubit>(PlayerStateCubit());
+
+  sl.registerSingleton<PlayerPositionBloc>(PlayerPositionBloc());
 
 }

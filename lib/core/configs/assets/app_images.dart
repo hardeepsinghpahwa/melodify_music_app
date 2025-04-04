@@ -9,6 +9,7 @@ class AppImages {
   static const String bottomSwirls = "${basePath}swirls$extension";
   static const String billie = "${basePath}billie$extension";
   static const String preview = "${basePath}preview$extension";
+  static const String dotMenu = "${basePath}threeDot$extension";
 
 
 }

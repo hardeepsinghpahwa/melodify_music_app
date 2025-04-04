@@ -6,6 +6,7 @@ import 'package:music_app/core/configs/assets/app_vectors.dart';
 import 'package:music_app/core/configs/theme/app_colors.dart';
 import 'package:music_app/domain/entities/song/song.dart';
 import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
+import 'package:music_app/presentation/player/player.dart';
 
 import '../../../services.dart';
 
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Spacer(),
                     SvgPicture.asset(AppVectors.logo, width: 120),
                     Spacer(),
-                    Icon(Icons.menu_sharp, size: 40),
+                    Image.asset(AppImages.dotMenu, height: 40),
                     SizedBox(width: 20),
                   ],
                 ),
@@ -144,7 +145,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 BlocBuilder<AllSongsBloc, AllSongsState>(
                   builder: (context, state) {
                     if (state is AllSongsLoading) {
-                      return CircularProgressIndicator();
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      );
                     }
 
                     if (state is AllSongsLoadingFailed) {
@@ -220,10 +225,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontStyle: FontStyle.italic,
                         fontSize: 50,
-                        foreground: Paint()
-                          ..style = PaintingStyle.stroke
-                          ..strokeWidth = 3
-                          ..color = AppColors.green,
+                        foreground:
+                            Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 3
+                              ..color = AppColors.green,
                       ),
                     ),
                     // Solid text as fill.
@@ -237,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -267,21 +273,29 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Stack(
-            children: <Widget>[
-              Positioned.fill(
-                child: Container(
-                  margin: EdgeInsets.all(10),
-                  // Modify this till it fills the color properly
-                  color: AppColors.darkGrey, // Color
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (ctx) => AudioPlayerScreen(song: song)),
+              );
+            },
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    // Modify this till it fills the color properly
+                    color: AppColors.darkGrey, // Color
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.play_circle_rounded, // Icon
-                color: AppColors.lightGrey,
-                size: 35,
-              ),
-            ],
+                Icon(
+                  Icons.play_circle_rounded, // Icon
+                  color: AppColors.lightGrey,
+                  size: 35,
+                ),
+              ],
+            ),
           ),
           SizedBox(width: 10),
           Column(

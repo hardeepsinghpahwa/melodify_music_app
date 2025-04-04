@@ -23,6 +23,7 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
             songModel.artist ?? "",
             songModel.duration ?? "",
             songModel.image ?? "",
+            songModel.link ?? "",
           ),
         );
       }

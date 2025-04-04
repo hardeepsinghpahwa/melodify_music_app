@@ -7,6 +7,8 @@ import 'package:music_app/presentation/chooseTheme/bloc/theme_cubit.dart';
 import 'package:music_app/presentation/dashboard/bloc/navigation_cubit.dart';
 import 'package:music_app/presentation/dashboard/pages/dashboard.dart';
 import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
+import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
+import 'package:music_app/presentation/player/bloc/player_state/player_state_cubit.dart';
 import 'package:music_app/presentation/register/bloc/loading/loading_bloc.dart';
 import 'package:music_app/services.dart';
 
@@ -29,6 +31,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => sl<LoadingBloc>()),
         BlocProvider(create: (_) => sl<NavigationCubit>()),
         BlocProvider(create: (_) => sl<AllSongsBloc>()),
+        BlocProvider(create: (_) => sl<PlayerStateCubit>()),
+        BlocProvider(create: (_) => sl<PlayerPositionBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder:

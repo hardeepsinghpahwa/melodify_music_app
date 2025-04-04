@@ -9,12 +9,14 @@ class SongModel {
   String? artist;
   String? duration;
   String? image;
+  String? link;
 
   SongModel({
     this.title,
     this.artist,
     this.duration,
     this.image,
+    this.link
   });
 
   factory SongModel.fromJson(Map<String, dynamic> json) => SongModel(
@@ -22,6 +24,7 @@ class SongModel {
     artist: json["artist"],
     duration: json["duration"],
     image: json["image"],
+    link: json["link"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -29,5 +32,6 @@ class SongModel {
     "artist": artist,
     "duration": duration,
     "image": image,
+    "link": link,
   };
 }
