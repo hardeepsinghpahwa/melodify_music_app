@@ -163,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shrinkWrap: true,
                         itemCount: songs.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return playlistItem(songs[index]);
+                          return playlistItem(songs, index);
                         },
                       );
                     }
@@ -267,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget playlistItem(SongEntity song) {
+  Widget playlistItem(List<SongEntity> songs, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -277,7 +277,10 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (ctx) => AudioPlayerScreen(song: song)),
+                MaterialPageRoute(
+                  builder:
+                      (ctx) => AudioPlayerScreen(songs: songs, index: index),
+                ),
               );
             },
             child: Stack(
@@ -303,14 +306,14 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Text(
                 maxLines: 1,
-                song.title,
+                songs[index].title,
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
-              Text(maxLines: 1, song.artist, style: TextStyle(fontSize: 10)),
+              Text(maxLines: 1, songs[index].artist, style: TextStyle(fontSize: 10)),
             ],
           ),
           Spacer(),
-          Text(song.duration.toString()),
+          Text(songs[index].duration.toString()),
           SizedBox(width: 40),
           Icon(Icons.favorite, color: AppColors.grey, size: 20),
           SizedBox(width: 30),
