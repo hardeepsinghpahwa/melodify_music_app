@@ -9,6 +9,8 @@ abstract class SongFirebaseService {
 
   Future<Either> getAllFavouriteSongs();
 
+  Future<Either> getTopSongs();
+
   Future<Either> favouriteSong(bool fav, String songId);
 
   Future<Either> isFavourite(String songId);
@@ -70,12 +72,12 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
   Future<Either> isFavourite(String songId) async {
     try {
       var snap =
-      await FirebaseFirestore.instance
-          .collection("Users")
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection("Favourites")
-          .doc(songId)
-          .get();
+          await FirebaseFirestore.instance
+              .collection("Users")
+              .doc(FirebaseAuth.instance.currentUser?.uid)
+              .collection("Favourites")
+              .doc(songId)
+              .get();
 
       if (snap.exists) {
         return Right(true);
@@ -92,19 +94,75 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
     List<SongEntity> songs = [];
 
     try {
-      var favIds = await FirebaseFirestore.instance.collection("Users").doc(FirebaseAuth.instance.currentUser!.uid).collection("Favourites").get();
+      var favIds =
+          await FirebaseFirestore.instance
+              .collection("Users")
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection("Favourites")
+              .get();
 
-      List<String> ids=[];
-      for(var i in favIds.docs){
+      List<String> ids = [];
+      for (var i in favIds.docs) {
         ids.add(i.id);
       }
-      print(ids);
 
-      var data = await FirebaseFirestore.instance.collection("Songs").where(FieldPath.documentId,
-        whereIn: ids
-      ).get();
+      var data =
+          await FirebaseFirestore.instance
+              .collection("Songs")
+              .where(FieldPath.documentId, whereIn: ids)
+              .get();
 
       for (var element in data.docs) {
+        var songModel = SongModel.fromJson(element.data());
+        songs.add(
+          SongEntity(
+            songModel.title ?? "",
+            songModel.artist ?? "",
+            songModel.duration ?? "",
+            songModel.image ?? "",
+            songModel.link ?? "",
+            element.id,
+          ),
+        );
+      }
+
+      return Right(songs);
+    } on FirebaseException catch (e) {
+      return Left("Something went wrong");
+    }
+  }
+
+  @override
+  Future<Either> getTopSongs() async {
+    List<SongEntity> songs = [];
+
+    try {
+      var topIds =
+          await FirebaseFirestore.instance
+              .collection("Top10")
+              .orderBy('priority', descending: false)
+              .get();
+
+      print(topIds.docs[0]['songId']);
+
+      List<String> ids = [];
+      for (var i in topIds.docs) {
+        ids.add(i['songId']);
+      }
+
+      var data =
+          await FirebaseFirestore.instance
+              .collection("Songs")
+              .where(FieldPath.documentId, whereIn: ids)
+              .get();
+
+
+      var newItems=data.docs;
+      newItems.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+
+
+      for (var element in newItems) {
+
         var songModel = SongModel.fromJson(element.data());
         songs.add(
           SongEntity(

@@ -1,20 +1,25 @@
 part of 'all_songs_bloc.dart';
 
 @immutable
-sealed class AllSongsState {}
-
-final class AllSongsInitial extends AllSongsState {}
-
-final class AllSongsLoading extends AllSongsState {}
-
-final class AllSongsLoaded extends AllSongsState {
-  final List<SongEntity> songs;
-
-  AllSongsLoaded({required this.songs});
-}
-
-final class AllSongsLoadingFailed extends AllSongsState {
+class AllSongsState {
+  final List<SongEntity>? allSongs;
+  final List<SongEntity>? topSongs;
+  final bool loading;
   final String error;
 
-  AllSongsLoadingFailed({required this.error});
+  const AllSongsState({this.allSongs, this.topSongs, this.loading = false,this.error=""});
+
+  AllSongsState copyWith({
+    List<SongEntity>? allSongs,
+    List<SongEntity>? topSongs,
+    bool? loading,
+    String? error,
+  }) {
+    return AllSongsState(
+      allSongs: allSongs ?? this.allSongs,
+      topSongs: topSongs ?? this.topSongs,
+      loading: loading ?? this.loading,
+      error: error ?? this.error,
+    );
+  }
 }

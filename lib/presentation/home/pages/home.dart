@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       sl<AllSongsBloc>().add(AllSongsLoadingEvent());
+      sl<AllSongsBloc>().add(Top10SongsLoadingEvent());
     });
   }
 
@@ -56,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       margin: EdgeInsets.only(right: 20),
                       padding: EdgeInsets.only(left: 20),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(20),
                         color: AppColors.green,
                       ),
                       child: Row(
@@ -68,11 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "New Album",
+                                    "Introducing",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   Text(
-                                    "Happier Than Ever",
+                                    "48 Rhymes",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500,
@@ -80,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                   Text(
-                                    "Billie Eilish",
+                                    "Karan Aujla",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ],
@@ -92,8 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(right: 30),
-                      child: Image.asset(AppImages.billie),
+                      padding: EdgeInsets.only(right: 40),
+                      child: Image.asset(AppImages.aujla,height: 160,),
                     ),
                   ],
                 ),
@@ -107,20 +108,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: 10),
-                SizedBox(
-                  height: 220,
-                  child: ListView(
-                    // This next line does the trick.
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      item("1"),
-                      item("2"),
-                      item("3"),
-                      item("4"),
-                      item("5"),
-                      item("6"),
-                    ],
-                  ),
+                BlocBuilder<AllSongsBloc, AllSongsState>(
+                  builder: (context, state) {
+                    if (state.loading == true) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      );
+                    }
+
+                    if ((state.topSongs ?? []).isNotEmpty) {
+                      return SizedBox(
+                        height: 220,
+                        child: ListView.builder(
+                          itemCount: state.topSongs!.length,
+                          // This next line does the trick.
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return item(index, state.topSongs!);
+                          },
+                        ),
+                      );
+                    }
+                    return SizedBox();
+                  },
                 ),
                 SizedBox(height: 30),
                 Row(
@@ -144,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 10),
                 BlocBuilder<AllSongsBloc, AllSongsState>(
                   builder: (context, state) {
-                    if (state is AllSongsLoading) {
+                    if (state.loading == true) {
                       return Center(
                         child: CircularProgressIndicator(
                           color: AppColors.primary,
@@ -152,12 +164,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
 
-                    if (state is AllSongsLoadingFailed) {
-                      return Text("Loading Failed");
-                    }
-
-                    if (state is AllSongsLoaded) {
-                      var songs = state.songs;
+                    if ((state.allSongs ?? []).isNotEmpty) {
+                      var songs = state.allSongs!;
                       return ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -171,6 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return SizedBox();
                   },
                 ),
+                SizedBox(height: 70),
               ],
             ),
           ),
@@ -179,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget item(String posi) {
+  Widget item(int index, List<SongEntity> song) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -187,17 +196,125 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Stack(
             children: [
               Container(
-                padding: EdgeInsets.only(bottom: 10),
-                margin: EdgeInsets.only(right: 10),
+                width: 160,
+                height: 220,
+                clipBehavior: Clip.antiAlias,
+                margin: EdgeInsets.only(left: index == 0 ? 0 : 10, right: 10),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                child: Image.asset(AppImages.preview, fit: BoxFit.cover),
+                child: Image.network(song[index].image, fit: BoxFit.cover),
               ),
               Positioned(
                 bottom: 0,
-                right: 20,
+                right: 0,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (ctx) =>
+                                AudioPlayerScreen(songs: song, index: index),
+                      ),
+                    );
+                  },
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned.fill(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          // Modify this till it fills the color properly
+                          color: AppColors.darkGrey, // Color
+                        ),
+                      ),
+                      Icon(
+                        Icons.play_circle_rounded, // Icon
+                        color: AppColors.lightGrey,
+                        size: 40,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                left: index == 0 ? 0 : 10,
+                bottom: 0,
                 child: Stack(
+                  children: <Widget>[
+                    // Stroked text as border.
+                    Text(
+                      (index + 1).toString(),
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        height: 0.7,
+                        fontSize: 80,
+                        foreground:
+                            Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 3
+                              ..color = Colors.grey,
+                      ),
+                    ),
+                    // Solid text as fill.
+                    Text(
+                      (index + 1).toString(),
+                      style: TextStyle(
+                        height: 0.7,
+                        fontStyle: FontStyle.italic,
+                        fontSize: 80,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 5),
+        Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text(
+            maxLines: 1,
+            song[index].title,
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text(
+            maxLines: 1,
+            song[index].artist,
+            style: TextStyle(fontSize: 10),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget playlistItem(List<SongEntity> songs, int index) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 20),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (ctx) => AudioPlayerScreen(songs: songs, index: index),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Stack(
                   children: <Widget>[
                     Positioned.fill(
                       child: Container(
@@ -213,111 +330,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-              ),
-              Positioned(
-                right: 20,
-                top: 0,
-                child: Stack(
-                  children: <Widget>[
-                    // Stroked text as border.
+                SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      posi,
+                      maxLines: 1,
+                      songs[index].title,
                       style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 50,
-                        foreground:
-                            Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = 3
-                              ..color = AppColors.green,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    // Solid text as fill.
                     Text(
-                      posi,
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 50,
-                        color: Colors.white,
-                      ),
+                      maxLines: 1,
+                      songs[index].artist,
+                      style: TextStyle(fontSize: 10),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: Text(
-            maxLines: 1,
-            "Bad Guy",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: Text(
-            maxLines: 1,
-            "Billie Eilish",
-            style: TextStyle(fontSize: 10),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget playlistItem(List<SongEntity> songs, int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (ctx) => AudioPlayerScreen(songs: songs, index: index),
-                ),
-              );
-            },
-            child: Stack(
-              children: <Widget>[
-                Positioned.fill(
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    // Modify this till it fills the color properly
-                    color: AppColors.darkGrey, // Color
-                  ),
-                ),
-                Icon(
-                  Icons.play_circle_rounded, // Icon
-                  color: AppColors.lightGrey,
-                  size: 35,
-                ),
+                Spacer(),
+                Text(songs[index].duration.toString()),
+                SizedBox(width: 40),
+                Icon(Icons.favorite, color: AppColors.grey, size: 20),
+                SizedBox(width: 10),
               ],
             ),
           ),
-          SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                maxLines: 1,
-                songs[index].title,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-              Text(maxLines: 1, songs[index].artist, style: TextStyle(fontSize: 10)),
-            ],
-          ),
-          Spacer(),
-          Text(songs[index].duration.toString()),
-          SizedBox(width: 40),
-          Icon(Icons.favorite, color: AppColors.grey, size: 20),
-          SizedBox(width: 30),
-        ],
+        ),
       ),
     );
   }

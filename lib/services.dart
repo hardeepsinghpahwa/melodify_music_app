@@ -11,6 +11,7 @@ import 'package:music_app/domain/usecases/checkFavouriteUseCase.dart';
 import 'package:music_app/domain/usecases/favouriteUseCase.dart';
 import 'package:music_app/domain/usecases/geAllSongsUseCase.dart';
 import 'package:music_app/domain/usecases/getFavouritesUseCase.dart';
+import 'package:music_app/domain/usecases/getTopSongsUseCase.dart';
 import 'package:music_app/domain/usecases/signInUseCase.dart';
 import 'package:music_app/domain/usecases/signUpUseCase.dart';
 import 'package:music_app/presentation/dashboard/bloc/navigation_cubit.dart';
@@ -55,5 +56,6 @@ Future<void> initDependencies() async{
 
   sl.registerSingleton<FavouritesBloc>(FavouritesBloc());
 
+  sl.registerSingleton<TopSongsUseCase>(TopSongsUseCase());
 
 }
