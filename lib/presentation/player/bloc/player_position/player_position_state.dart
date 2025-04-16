@@ -10,6 +10,8 @@ class PlayerCurrentState {
   final String? error;
   final String? success;
   final bool loading;
+  final List<SongEntity>? songs;
+  final int currentIndex;
 
   const PlayerCurrentState({
     this.isPlaying = false,
@@ -19,7 +21,9 @@ class PlayerCurrentState {
     this.currentSong,
     this.error,
     this.success,
-    this.loading=false
+    this.loading=false,
+    this.songs,
+    this.currentIndex=-1
   });
 
   PlayerCurrentState copyWith({
@@ -30,7 +34,9 @@ class PlayerCurrentState {
     SongEntity? currentSong,
     String? error,
     String? success,
-    bool? loading
+    bool? loading,
+    List<SongEntity>? songs,
+    int? currentIndex
   }) {
     return PlayerCurrentState(
       isPlaying: isPlaying ?? this.isPlaying,
@@ -41,6 +47,8 @@ class PlayerCurrentState {
       error: error ?? this.error,
       success: success ?? this.success,
       loading: loading ?? this.loading,
+      songs: songs ?? this.songs,
+      currentIndex: currentIndex ?? this.currentIndex,
     );
   }
 }

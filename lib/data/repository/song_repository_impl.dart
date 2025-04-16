@@ -30,4 +30,9 @@ class SongRepositoryImpl extends SongRepository {
     return sl<SongFirebaseService>().getTopSongs();
 
   }
+
+  @override
+  Future<Either> searchSong(String searchText) {
+    return sl<SongFirebaseService>().searchSong(searchText);
+  }
 }

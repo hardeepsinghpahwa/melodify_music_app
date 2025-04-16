@@ -43,6 +43,7 @@ dependencies:
   cloud_firestore:
   equatable:
   audioplayers:
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:

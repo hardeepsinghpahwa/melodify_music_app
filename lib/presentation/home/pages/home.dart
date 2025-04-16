@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -41,11 +42,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(Icons.search_sharp, size: 40),
+                    //Icon(Icons.search_sharp, size: 40),
                     Spacer(),
                     SvgPicture.asset(AppVectors.logo, width: 120),
                     Spacer(),
-                    Image.asset(AppImages.dotMenu, height: 40),
+                    //Image.asset(AppImages.dotMenu, height: 40),
                     SizedBox(width: 20),
                   ],
                 ),
@@ -209,13 +210,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 bottom: 0,
                 right: 0,
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
                             (ctx) =>
-                                AudioPlayerScreen(songs: song, index: index),
+                                AudioPlayerScreen(songs: song, index: index,play: false,),
                       ),
                     );
                   },
@@ -301,7 +303,11 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
-          onTap: () {
+          onTap: () async {
+
+            // await sl<SharedPreferences>().setString("songs", jsonEncode(songs));
+            // await sl<SharedPreferences>().setInt("index", index);
+
             Navigator.push(
               context,
               MaterialPageRoute(

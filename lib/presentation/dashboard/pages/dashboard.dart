@@ -11,6 +11,7 @@ import 'package:music_app/presentation/home/pages/home.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
 
 import '../../../services.dart';
+import '../../player/player.dart';
 
 class Dashboard extends StatelessWidget {
   Dashboard({super.key});
@@ -20,7 +21,7 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.lightGrey,
       body: SafeArea(
         child: Stack(
@@ -42,137 +43,153 @@ class Dashboard extends StatelessWidget {
                   BlocBuilder<PlayerPositionBloc, PlayerCurrentState>(
                     builder: (context, state) {
                       if (state.currentSong != null) {
-                        return Container(
-                          clipBehavior: Clip.antiAlias,
-                          margin: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: AppColors.lightGrey,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Image.network(
-                                    state.currentSong?.image ?? "",
-                                    width: 60,
-                                    height: 60,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        state.currentSong?.title ?? "",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (ctx) => AudioPlayerScreen(
+                                      songs: state.songs ?? [],
+                                      index: state.currentIndex,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            clipBehavior: Clip.antiAlias,
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: AppColors.lightGrey,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Image.network(
+                                      state.currentSong?.image ?? "",
+                                      width: 60,
+                                      height: 60,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          state.currentSong?.title ?? "",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        state.currentSong?.artist ?? "",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 12,
+                                        Text(
+                                          state.currentSong?.artist ?? "",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  // GestureDetector(
-                                  //   onTap: () {
-                                  //     int nextIndex = 0;
-                                  //     if (currentIndex != 0) {
-                                  //       nextIndex = currentIndex - 1;
-                                  //     } else {
-                                  //       nextIndex = widget.songs.length - 1;
-                                  //     }
-                                  //     currentIndex = nextIndex;
-                                  //     changeSong(widget.songs[nextIndex]);
-                                  //   },
-                                  //   child: Icon(
-                                  //     Icons.arrow_circle_left_outlined,
-                                  //     size: 30,
-                                  //   ),
-                                  // ),
-                                  Spacer(),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      player.resume();
-                                      if (player.state == PlayerState.playing) {
-                                        sl<PlayerPositionBloc>().add(
-                                          PlayerPlayChangeEvent(false),
-                                        );
-                                        player.pause();
-                                      } else {
-                                        sl<PlayerPositionBloc>().add(
-                                          PlayerPlayChangeEvent(true),
-                                        );
-                                      }
-                                    },
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.green,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        !state.isPlaying
-                                            ? Icons.play_arrow
-                                            : Icons.pause,
-                                        color: Colors.white,
-                                        size: 25,
+                                      ],
+                                    ),
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     int nextIndex = 0;
+                                    //     if (currentIndex != 0) {
+                                    //       nextIndex = currentIndex - 1;
+                                    //     } else {
+                                    //       nextIndex = widget.songs.length - 1;
+                                    //     }
+                                    //     currentIndex = nextIndex;
+                                    //     changeSong(widget.songs[nextIndex]);
+                                    //   },
+                                    //   child: Icon(
+                                    //     Icons.arrow_circle_left_outlined,
+                                    //     size: 30,
+                                    //   ),
+                                    // ),
+                                    Spacer(),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        player.resume();
+                                        if (player.state ==
+                                            PlayerState.playing) {
+                                          sl<PlayerPositionBloc>().add(
+                                            PlayerPlayChangeEvent(false),
+                                          );
+                                          player.pause();
+                                        } else {
+                                          sl<PlayerPositionBloc>().add(
+                                            PlayerPlayChangeEvent(true),
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.green,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          !state.isPlaying
+                                              ? Icons.play_arrow
+                                              : Icons.pause,
+                                          color: Colors.white,
+                                          size: 25,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  // GestureDetector(
-                                  //   onTap: () {
-                                  //     int nextIndex = 0;
-                                  //     if (currentIndex != widget.songs.length - 1) {
-                                  //       nextIndex = currentIndex + 1;
-                                  //     }
-                                  //     currentIndex = nextIndex;
-                                  //     changeSong(widget.songs[nextIndex]);
-                                  //   },
-                                  //   child: Icon(
-                                  //     Icons.arrow_circle_right_outlined,
-                                  //     size: 30,
-                                  //   ),
-                                  // ),
-                                  SizedBox(width: 10),
-                                ],
-                              ),
-                              SliderTheme(
-                                data: SliderThemeData(
-                                  thumbColor: Colors.green,
-                                  thumbShape: RoundSliderThumbShape(
-                                    enabledThumbRadius: 0,
-                                  ),
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     int nextIndex = 0;
+                                    //     if (currentIndex != widget.songs.length - 1) {
+                                    //       nextIndex = currentIndex + 1;
+                                    //     }
+                                    //     currentIndex = nextIndex;
+                                    //     changeSong(widget.songs[nextIndex]);
+                                    //   },
+                                    //   child: Icon(
+                                    //     Icons.arrow_circle_right_outlined,
+                                    //     size: 30,
+                                    //   ),
+                                    // ),
+                                    SizedBox(width: 10),
+                                  ],
                                 ),
-                                child: Slider(
-                                  allowedInteraction:
-                                      SliderInteraction.tapAndSlide,
-                                  padding: EdgeInsets.zero,
-                                  activeColor: AppColors.primary,
-                                  value: state.position.toDouble(),
-                                  min: 0.0,
-                                  max: state.duration.toDouble() + 1,
-                                  onChanged: (value) {
-                                    if (player.source == null) {
-                                      player.setSource(
-                                        UrlSource(
-                                          state.currentSong?.link ?? "",
-                                        ),
+                                SliderTheme(
+                                  data: SliderThemeData(
+                                    thumbColor: Colors.green,
+                                    thumbShape: RoundSliderThumbShape(
+                                      enabledThumbRadius: 0,
+                                    ),
+                                  ),
+                                  child: Slider(
+                                    allowedInteraction:
+                                        SliderInteraction.tapAndSlide,
+                                    padding: EdgeInsets.zero,
+                                    activeColor: AppColors.primary,
+                                    value: state.position.toDouble(),
+                                    min: 0.0,
+                                    max: state.duration.toDouble() + 1,
+                                    onChanged: (value) {
+                                      if (player.source == null) {
+                                        player.setSource(
+                                          UrlSource(
+                                            state.currentSong?.link ?? "",
+                                          ),
+                                        );
+                                      }
+                                      player.seek(
+                                        Duration(seconds: value.toInt()),
                                       );
-                                    }
-                                    player.seek(
-                                      Duration(seconds: value.toInt()),
-                                    );
-                                  },
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       }
@@ -228,6 +245,8 @@ class Dashboard extends StatelessWidget {
               SizedBox(height: 10),
               SvgPicture.asset(
                 icon,
+                width: 25,
+                height: 25,
                 colorFilter: ColorFilter.mode(
                   valueState == state ? AppColors.primary : Colors.grey,
                   BlendMode.srcIn,

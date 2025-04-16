@@ -22,9 +22,10 @@ class PlayerPlayChangeEvent extends PlayerEvent {
 }
 
 class ChangeSongEvent extends PlayerEvent {
-  final SongEntity song;
+  final List<SongEntity> songs;
+  final currentIndex;
 
-  ChangeSongEvent(this.song);
+  ChangeSongEvent(this.songs,this.currentIndex);
 }
 
 class FavouriteEvent extends PlayerEvent {

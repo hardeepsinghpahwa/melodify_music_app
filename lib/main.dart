@@ -6,6 +6,7 @@ import 'package:music_app/firebase_options.dart';
 import 'package:music_app/presentation/chooseTheme/bloc/theme_cubit.dart';
 import 'package:music_app/presentation/dashboard/bloc/navigation_cubit.dart';
 import 'package:music_app/presentation/dashboard/pages/dashboard.dart';
+import 'package:music_app/presentation/explore/bloc/explore_bloc.dart';
 import 'package:music_app/presentation/favourites/bloc/favourites_bloc.dart';
 import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
 import 'package:music_app/presentation/intro/pages/intro.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => sl<AllSongsBloc>()),
         BlocProvider(create: (_) => sl<PlayerPositionBloc>()),
         BlocProvider(create: (_) => sl<FavouritesBloc>()),
+        BlocProvider(create: (_) => sl<ExploreBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder:

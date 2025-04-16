@@ -14,6 +14,8 @@ abstract class SongFirebaseService {
   Future<Either> favouriteSong(bool fav, String songId);
 
   Future<Either> isFavourite(String songId);
+
+  Future<Either> searchSong(String searchText);
 }
 
 class SongFirebaseServiceImpl extends SongFirebaseService {
@@ -143,8 +145,6 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
               .orderBy('priority', descending: false)
               .get();
 
-      print(topIds.docs[0]['songId']);
-
       List<String> ids = [];
       for (var i in topIds.docs) {
         ids.add(i['songId']);
@@ -156,13 +156,52 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
               .where(FieldPath.documentId, whereIn: ids)
               .get();
 
-
-      var newItems=data.docs;
+      var newItems = data.docs;
       newItems.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
 
-
       for (var element in newItems) {
+        var songModel = SongModel.fromJson(element.data());
+        songs.add(
+          SongEntity(
+            songModel.title ?? "",
+            songModel.artist ?? "",
+            songModel.duration ?? "",
+            songModel.image ?? "",
+            songModel.link ?? "",
+            element.id,
+          ),
+        );
+      }
 
+      return Right(songs);
+    } on FirebaseException catch (e) {
+      return Left("Something went wrong");
+    }
+  }
+
+  @override
+  Future<Either> searchSong(String searchText) async {
+    List<SongEntity> songs = [];
+    try {
+      final titleResults =
+          FirebaseFirestore.instance
+              .collection("Songs")
+              .where('artist', isGreaterThanOrEqualTo: searchText)
+              .where('artist', isLessThanOrEqualTo: '$searchText\uf8ff')
+              .get();
+
+      final artistResults =
+          FirebaseFirestore.instance
+              .collection("Songs")
+              .where('title', isGreaterThanOrEqualTo: searchText)
+              .where('title', isLessThanOrEqualTo: '$searchText\uf8ff')
+              .get();
+
+      final allResults = await Future.wait([titleResults, artistResults]);
+
+      final allDocs = {...allResults[0].docs, ...allResults[1].docs}.toList();
+
+      for (var element in allDocs) {
         var songModel = SongModel.fromJson(element.data());
         songs.add(
           SongEntity(

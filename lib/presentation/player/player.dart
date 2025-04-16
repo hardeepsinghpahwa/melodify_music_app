@@ -2,7 +2,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music_app/common/widgets/back_button.dart';
-import 'package:music_app/core/configs/assets/app_images.dart';
 import 'package:music_app/domain/entities/song/song.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
 
@@ -13,10 +12,12 @@ import '../../services.dart';
 class AudioPlayerScreen extends StatefulWidget {
   final List<SongEntity> songs;
   final int index;
+  final bool play;
 
   const AudioPlayerScreen({
     required this.songs,
     required this.index,
+    this.play = true,
     super.key,
   });
 
@@ -36,16 +37,17 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
   }
 
   playSong() async {
-    sl<PlayerPositionBloc>().add(PlayerPlayChangeEvent(true));
-
+    if (widget.play) {
+      sl<PlayerPositionBloc>().add(PlayerPlayChangeEvent(true));
+    }
     if (player.source != null &&
         (player.source as UrlSource).url != widget.songs[currentIndex].link) {
-      sl<PlayerPositionBloc>().add(ChangeSongEvent(widget.songs[currentIndex]));
+      sl<PlayerPositionBloc>().add(ChangeSongEvent(widget.songs, currentIndex));
       await player.play(UrlSource(widget.songs[currentIndex].link));
     } else {
       if (player.state != PlayerState.playing) {
         sl<PlayerPositionBloc>().add(
-          ChangeSongEvent(widget.songs[currentIndex]),
+          ChangeSongEvent(widget.songs, currentIndex),
         );
         await player.play(UrlSource(widget.songs[currentIndex].link));
       }
@@ -63,8 +65,11 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
       );
 
       if (duration.inSeconds == (sl<PlayerPositionBloc>().state.duration + 1)) {
-        sl<PlayerPositionBloc>().add(PlayerPositionChangeEvent(0));
-        sl<PlayerPositionBloc>().add(PlayerPlayChangeEvent(false));
+        if (currentIndex != widget.songs.length - 1) {
+          changeSong(widget.songs, currentIndex + 1);
+        } else {
+          changeSong(widget.songs, 0);
+        }
       }
     });
 
@@ -104,7 +109,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                           ),
                         ),
                         Spacer(),
-                        Image.asset(AppImages.dotMenu, height: 30),
+                        //Image.asset(AppImages.dotMenu, height: 30),
                       ],
                     ),
                     Expanded(
@@ -142,22 +147,6 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                               style: TextStyle(fontSize: 18),
                             ),
                           ],
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            sl<PlayerPositionBloc>().add(
-                              FavouriteEvent(
-                                !state.favourite,
-                                state.currentSong?.id ?? "",
-                              ),
-                            );
-                          },
-                          child: Icon(
-                            Icons.favorite,
-                            color:
-                                state.favourite ? Colors.red : AppColors.grey,
-                            size: 20,
-                          ),
                         ),
                       ],
                     ),
@@ -213,7 +202,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                               nextIndex = widget.songs.length - 1;
                             }
                             currentIndex = nextIndex;
-                            changeSong(widget.songs[nextIndex]);
+                            changeSong(widget.songs, nextIndex);
                           },
                           child: Icon(
                             Icons.arrow_circle_left_outlined,
@@ -262,14 +251,30 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                               nextIndex = currentIndex + 1;
                             }
                             currentIndex = nextIndex;
-                            changeSong(widget.songs[nextIndex]);
+                            changeSong(widget.songs, nextIndex);
                           },
                           child: Icon(
                             Icons.arrow_circle_right_outlined,
                             size: 30,
                           ),
                         ),
-                        Icon(Icons.shuffle, size: 30),
+                        GestureDetector(
+                          onTap: () {
+                            sl<PlayerPositionBloc>().add(
+                              FavouriteEvent(
+                                !state.favourite,
+                                state.currentSong?.id ?? "",
+                              ),
+                            );
+                          },
+                          child: Icon(
+                            state.favourite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: state.favourite ? Colors.red : Colors.black,
+                            size: 30,
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(height: 20),
@@ -283,9 +288,9 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
     );
   }
 
-  changeSong(SongEntity song) {
-    player.play(UrlSource(song.link));
-    sl<PlayerPositionBloc>().add(ChangeSongEvent(song));
+  changeSong(List<SongEntity> songs, int nextIndex) {
+    player.play(UrlSource(songs[nextIndex].link));
+    sl<PlayerPositionBloc>().add(ChangeSongEvent(songs, nextIndex));
   }
 
   String getTime(double seconds) {
