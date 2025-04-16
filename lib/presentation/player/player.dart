@@ -53,9 +53,9 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
       }
     }
 
-    player.getDuration().then((value) {
+    player.onDurationChanged.listen((value) {
       sl<PlayerPositionBloc>().add(
-        PlayerDurationChangeEvent(value!.inSeconds.toDouble()),
+        PlayerDurationChangeEvent(value.inSeconds.toDouble()),
       );
     });
 
@@ -288,8 +288,9 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
     );
   }
 
-  changeSong(List<SongEntity> songs, int nextIndex) {
+  changeSong(List<SongEntity> songs, int nextIndex) async {
     player.play(UrlSource(songs[nextIndex].link));
+
     sl<PlayerPositionBloc>().add(ChangeSongEvent(songs, nextIndex));
   }
 
