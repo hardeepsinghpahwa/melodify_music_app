@@ -1,16 +1,32 @@
-# music_app
+🎵 # Flutter Music App – Clean Architecture | BLoC | Dependency Injection
 
-A new Flutter project.
+This Flutter Music App is a modern and scalable music player built with Clean Architecture principles, leveraging BLoC (Business Logic Component) for predictable state management and Dependency Injection for enhanced modularity and testability.
 
-## Getting Started
+🔧 Tech Stack & Features:
+Flutter (Dart) for cross-platform development.
 
-This project is a starting point for a Flutter application.
+BLoC State Management to manage UI state reactively and efficiently.
 
-A few resources to get you started if this is your first Flutter project:
+Clean Architecture ensures separation of concerns across Data, Domain, and Presentation layers.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Dependency Injection (using get_it) for decoupled and easily testable components.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Audio Playback using audioplayers library.
+
+Custom UI with smooth animations and responsive design.
+
+Playlist & Queue Management.
+
+Search songs by name, artist, etc.
+
+Dark/Light Theme Toggle.
+
+🔍 Project Highlights:
+Domain Layer: Contains use cases and abstract repositories defining core business logic.
+
+Data Layer: Handles API or local DB operations, implements repositories.
+
+Presentation Layer: UI screens, BLoC/Cubit classes, and user interactions.
+
+DI Setup: Centralized configuration using get_it.
+
