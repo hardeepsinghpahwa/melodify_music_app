@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:music_app/common/helpers/is_dark_mode.dart';
 import 'package:music_app/core/configs/assets/app_vectors.dart';
 import 'package:music_app/core/configs/theme/app_colors.dart';
 import 'package:music_app/presentation/dashboard/bloc/navigation_cubit.dart';
@@ -9,6 +10,7 @@ import 'package:music_app/presentation/explore/pages/explore.dart';
 import 'package:music_app/presentation/favourites/pages/favourites.dart';
 import 'package:music_app/presentation/home/pages/home.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
+import 'package:music_app/presentation/profile/pages/profile_screen.dart';
 
 import '../../../services.dart';
 import '../../player/player.dart';
@@ -31,7 +33,7 @@ class Dashboard extends StatelessWidget {
               child: PageView(
                 physics: NeverScrollableScrollPhysics(),
                 controller: pageController,
-                children: [HomeScreen(), ExploreScreen(), FavouritesScreen()],
+                children: [HomeScreen(), ExploreScreen(), FavouritesScreen(),ProfileScreen()],
               ),
             ),
             Positioned(
@@ -60,7 +62,7 @@ class Dashboard extends StatelessWidget {
                             clipBehavior: Clip.antiAlias,
                             margin: EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: AppColors.lightGrey,
+                              color: context.isDarkMode?Colors.grey.shade500:AppColors.lightGrey,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Column(
@@ -83,6 +85,7 @@ class Dashboard extends StatelessWidget {
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
+                                            color: context.isDarkMode?Colors.white:Colors.grey
                                           ),
                                         ),
                                         Text(
@@ -130,7 +133,7 @@ class Dashboard extends StatelessWidget {
                                         width: 40,
                                         height: 40,
                                         decoration: BoxDecoration(
-                                          color: AppColors.green,
+                                          color: AppColors.primary,
                                           shape: BoxShape.circle,
                                         ),
                                         child: Icon(
@@ -161,7 +164,7 @@ class Dashboard extends StatelessWidget {
                                 ),
                                 SliderTheme(
                                   data: SliderThemeData(
-                                    thumbColor: Colors.green,
+                                    thumbColor: AppColors.primary,
                                     thumbShape: RoundSliderThumbShape(
                                       enabledThumbRadius: 0,
                                     ),
@@ -198,7 +201,7 @@ class Dashboard extends StatelessWidget {
                   ),
                   Container(
                     height: 60,
-                    color: Colors.white,
+                    color: context.isDarkMode?AppColors.darkBackground:Colors.white,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [

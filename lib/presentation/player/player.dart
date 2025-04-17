@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:music_app/common/helpers/is_dark_mode.dart';
 import 'package:music_app/common/widgets/back_button.dart';
 import 'package:music_app/domain/entities/song/song.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
@@ -50,6 +51,11 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
           ChangeSongEvent(widget.songs, currentIndex),
         );
         await player.play(UrlSource(widget.songs[currentIndex].link));
+        player.getDuration().then((value) {
+          sl<PlayerPositionBloc>().add(
+            PlayerDurationChangeEvent(value!.inSeconds.toDouble()),
+          );
+        });
       }
     }
 
@@ -271,7 +277,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                             state.favourite
                                 ? Icons.favorite
                                 : Icons.favorite_border,
-                            color: state.favourite ? Colors.red : Colors.black,
+                            color: state.favourite ? Colors.red : context.isDarkMode?Colors.white:Colors.black,
                             size: 30,
                           ),
                         ),

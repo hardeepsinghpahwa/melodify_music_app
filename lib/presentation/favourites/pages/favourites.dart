@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:music_app/common/helpers/is_dark_mode.dart';
+import 'package:music_app/common/widgets/loader.dart';
 import 'package:music_app/core/configs/assets/app_images.dart';
 import 'package:music_app/presentation/favourites/bloc/favourites_bloc.dart';
 
 import '../../../common/utils.dart';
 import '../../../core/configs/theme/app_colors.dart';
 import '../../../services.dart';
+import '../../player/player.dart';
 
 class FavouritesScreen extends StatefulWidget {
   const FavouritesScreen({super.key});
@@ -28,13 +31,13 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: BlocBuilder<FavouritesBloc, FavouritesState>(
-          builder: (context, state) {
-            return Stack(
-              children: [
-                Column(
+      body: BlocBuilder<FavouritesBloc, FavouritesState>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 10),
@@ -56,11 +59,16 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                 padding: const EdgeInsets.all(5.0),
                                 child: Material(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
+                                  color: Colors.transparent,
                                   child: InkWell(
                                     borderRadius: BorderRadius.circular(10),
                                     onTap: () {
-
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (ctx) => AudioPlayerScreen(songs: state.songFavourites!, index: index),
+                                        ),
+                                      );
                                     },
                                     child: Row(
                                       children: [
@@ -128,16 +136,14 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                         : SizedBox(),
                   ],
                 ),
-                Visibility(
-                  visible: state.isLoading ?? false,
-                  child: Center(
-                    child: CircularProgressIndicator(color: AppColors.green),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+              ),
+              Visibility(
+                visible: state.isLoading ?? false,
+                child: Loader()
+              ),
+            ],
+          );
+        },
       ),
     );
   }

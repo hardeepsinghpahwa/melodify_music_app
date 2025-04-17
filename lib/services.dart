@@ -12,6 +12,7 @@ import 'package:music_app/domain/usecases/favouriteUseCase.dart';
 import 'package:music_app/domain/usecases/geAllSongsUseCase.dart';
 import 'package:music_app/domain/usecases/getFavouritesUseCase.dart';
 import 'package:music_app/domain/usecases/getTopSongsUseCase.dart';
+import 'package:music_app/domain/usecases/getUseDetailsUseCase.dart';
 import 'package:music_app/domain/usecases/searchSongUseCase.dart';
 import 'package:music_app/domain/usecases/signInUseCase.dart';
 import 'package:music_app/domain/usecases/signUpUseCase.dart';
@@ -20,6 +21,7 @@ import 'package:music_app/presentation/explore/bloc/explore_bloc.dart';
 import 'package:music_app/presentation/favourites/bloc/favourites_bloc.dart';
 import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
+import 'package:music_app/presentation/profile/bloc/profile_bloc.dart';
 import 'package:music_app/presentation/register/bloc/loading/loading_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -67,5 +69,9 @@ Future<void> initDependencies() async{
   sl.registerSingleton<ExploreBloc>(ExploreBloc());
 
   sl.registerSingleton<SearchSongUseCase>(SearchSongUseCase());
+
+  sl.registerSingleton<GetUserDetailsUseCase>(GetUserDetailsUseCase());
+
+  sl.registerSingleton<ProfileBloc>(ProfileBloc());
 
 }

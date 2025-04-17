@@ -11,7 +11,9 @@ import 'package:music_app/presentation/favourites/bloc/favourites_bloc.dart';
 import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
 import 'package:music_app/presentation/intro/pages/intro.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
+import 'package:music_app/presentation/profile/bloc/profile_bloc.dart';
 import 'package:music_app/presentation/register/bloc/loading/loading_bloc.dart';
+import 'package:music_app/presentation/splash/pages/splashScreen.dart';
 import 'package:music_app/services.dart';
 
 Future<void> main() async {
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => sl<PlayerPositionBloc>()),
         BlocProvider(create: (_) => sl<FavouritesBloc>()),
         BlocProvider(create: (_) => sl<ExploreBloc>()),
+        BlocProvider(create: (_) => sl<ProfileBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder:
@@ -45,7 +48,7 @@ class MyApp extends StatelessWidget {
               darkTheme: AppTheme.darkTheme,
               themeMode: mode,
               debugShowCheckedModeBanner: false,
-              home: Dashboard(),
+              home: SplashScreen(),
             ),
       ),
     );

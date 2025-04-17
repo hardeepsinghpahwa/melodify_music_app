@@ -8,7 +8,10 @@ import '../../../core/configs/assets/app_images.dart';
 import '../../../core/configs/assets/app_vectors.dart';
 
 class ChooseThemeScreen extends StatefulWidget {
-  const ChooseThemeScreen({super.key});
+
+  final bool fromProfile;
+
+  const ChooseThemeScreen({this.fromProfile=false,super.key});
 
   @override
   State<ChooseThemeScreen> createState() => _ChooseThemeScreenState();
@@ -64,12 +67,16 @@ class _ChooseThemeScreenState extends State<ChooseThemeScreen> {
                     SizedBox(height: 40),
                     BasicButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginPreview(),
-                          ),
-                        );
+                        if(widget.fromProfile){
+                          Navigator.pop(context);
+                        }else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginPreview(),
+                            ),
+                          );
+                        }
                       },
                       title: "Continue",
                     ),

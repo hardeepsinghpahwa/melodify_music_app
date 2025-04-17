@@ -15,6 +15,7 @@ import '../../../common/widgets/inputField.dart';
 import '../../../core/configs/assets/app_vectors.dart';
 import '../../../core/configs/theme/app_colors.dart';
 import '../../../services.dart';
+import '../../dashboard/pages/dashboard.dart';
 import '../../home/pages/home.dart';
 
 class Login extends StatefulWidget {
@@ -136,7 +137,7 @@ class _LoginState extends State<Login> {
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => HomeScreen(),
+                                  builder: (context) => Dashboard(),
                                 ),
                                 (route) => false,
                               );

@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:music_app/common/helpers/is_dark_mode.dart';
 import 'package:music_app/core/configs/assets/app_images.dart';
 import 'package:music_app/core/configs/assets/app_vectors.dart';
 import 'package:music_app/core/configs/theme/app_colors.dart';
@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.only(left: 20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: AppColors.green,
+                        color: AppColors.primary,
                       ),
                       child: Row(
                         children: [
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(right: 40),
-                      child: Image.asset(AppImages.aujla,height: 160,),
+                      child: Image.asset(AppImages.aujla, height: 160),
                     ),
                   ],
                 ),
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    color: Colors.black,
+                    color: context.isDarkMode?Colors.white:Colors.black,
                   ),
                 ),
                 SizedBox(height: 10),
@@ -143,13 +143,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: Colors.black,
+                        color: context.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
                     Spacer(),
                     Text(
                       "See More",
-                      style: TextStyle(fontSize: 12, color: Colors.black),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: context.isDarkMode ? Colors.white : Colors.black,
+                      ),
                     ),
                     SizedBox(width: 20),
                   ],
@@ -211,13 +214,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 right: 0,
                 child: GestureDetector(
                   onTap: () async {
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
-                            (ctx) =>
-                                AudioPlayerScreen(songs: song, index: index,play: false,),
+                            (ctx) => AudioPlayerScreen(
+                              songs: song,
+                              index: index,
+                              play: false,
+                            ),
                       ),
                     );
                   },
@@ -297,14 +302,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget playlistItem(List<SongEntity> songs, int index) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20),
+      padding: const EdgeInsets.only(right: 20, bottom: 5),
       child: Material(
-        color: Colors.white,
+        color: context.isDarkMode?Colors.transparent:Colors.white,
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
           onTap: () async {
-
             // await sl<SharedPreferences>().setString("songs", jsonEncode(songs));
             // await sl<SharedPreferences>().setInt("index", index);
 
@@ -320,6 +324,48 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                SizedBox(width: 10),
+                Image.network(songs[index].image,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,),
+                SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      maxLines: 1,
+                      songs[index].title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: context.isDarkMode?Colors.white:Colors.black,
+                      ),
+                    ),
+                    Text(
+                      maxLines: 1,
+                      songs[index].artist,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: context.isDarkMode?Colors.white:Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+                Spacer(),
+                Text(
+                  songs[index].duration.toString(),
+                  style: TextStyle(
+                    color: context.isDarkMode?Colors.white:Colors.black,
+                  ),
+                ),
+                SizedBox(width: 40),
+                Icon(
+                  Icons.favorite_border,
+                  color: context.isDarkMode?Colors.white:Colors.black,
+                  size: 20,
+                ),
+                SizedBox(width: 10),
                 Stack(
                   children: <Widget>[
                     Positioned.fill(
@@ -336,30 +382,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      maxLines: 1,
-                      songs[index].title,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      maxLines: 1,
-                      songs[index].artist,
-                      style: TextStyle(fontSize: 10),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Text(songs[index].duration.toString()),
-                SizedBox(width: 40),
-                Icon(Icons.favorite, color: AppColors.grey, size: 20),
-                SizedBox(width: 10),
               ],
             ),
           ),
