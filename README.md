@@ -45,7 +45,7 @@
 
 <ol>
   <li>Clone the repository:</li>
-  <pre><code>git clone https://github.com/hardeepsinghpahwa/music_app.git</code></pre>
+  <pre><code>git clone https://github.com/hardeepsinghpahwa/melodify_music_app.git</code></pre>
   
   <li>Navigate to the project folder:</li>
   <pre><code>cd music_app</code></pre>
