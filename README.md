@@ -1,16 +1,68 @@
-# music_app
+<h1>🎵 Flutter Music App</h1>
 
-A new Flutter project.
+<p>
+  A powerful and scalable <strong>Flutter Music App</strong> developed with <strong>Clean Architecture</strong>, 
+  <strong>BLoC</strong> for state management, and <strong>Dependency Injection</strong> for modular design. 
+  This project follows best practices to ensure maintainability, testability, and high performance.
+</p>
 
-## Getting Started
+<h2>🧱 Architecture</h2>
 
-This project is a starting point for a Flutter application.
+<p>
+  The project is based on the <strong>Clean Architecture</strong> pattern which divides the codebase into distinct layers:
+</p>
 
-A few resources to get you started if this is your first Flutter project:
+<ul>
+  <li><strong>Presentation Layer:</strong> Handles UI and state management with BLoC</li>
+  <li><strong>Domain Layer:</strong> Contains business logic and use cases</li>
+  <li><strong>Data Layer:</strong> Manages repositories and data sources (local or remote)</li>
+</ul>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<h2>🛠️ Tech Stack</h2>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<ul>
+  <li><strong>Flutter</strong> - Cross-platform framework</li>
+  <li><strong>Dart</strong> - Programming language</li>
+  <li><strong>BLoC</strong> - Reactive state management</li>
+  <li><strong>GetIt</strong> - Dependency injection</li>
+  <li><strong>Just Audio</strong> - Audio playback</li>
+  <li><strong>Equatable</strong>, <strong>Freezed</strong> - Data modeling</li>
+</ul>
+
+<h2>📱 Features</h2>
+
+<ul>
+  <li>🎧 Audio playback: Play, pause, skip, seek</li>
+  <li>📁 Browse songs by artist, playlist</li>
+  <li>🔍 Search functionality</li>
+  <li>🌗 Light/Dark theme switch</li>
+  <li>📶 Responsive UI for all screen sizes</li>
+</ul>
+
+<h2>🚀 Getting Started</h2>
+
+<ol>
+  <li>Clone the repository:</li>
+  <pre><code>git clone https://github.com/hardeepsinghpahwa/music_app.git</code></pre>
+  
+  <li>Navigate to the project folder:</li>
+  <pre><code>cd music_app</code></pre>
+  
+  <li>Install dependencies:</li>
+  <pre><code>flutter pub get</code></pre>
+  
+  <li>Run the app:</li>
+  <pre><code>flutter run</code></pre>
+</ol>
+
+<h2>📂 Project Structure (Simplified)</h2>
+
+<pre><code>lib/
+├── common/             # Common Widgets, Helpers
+├── core/               # Shared utilities, themes, DI
+├── presentation/       # UI, widgets, BLoC
+├── domain/             # Entities, use cases
+└── data/               # Repositories, data sources
+└── main.dart           # Entry point
+</code></pre>
+
