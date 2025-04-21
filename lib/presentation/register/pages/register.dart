@@ -7,6 +7,7 @@ import 'package:music_app/common/widgets/back_button.dart';
 import 'package:music_app/common/widgets/basic_button.dart';
 import 'package:music_app/common/widgets/inputField.dart';
 import 'package:music_app/common/widgets/loader.dart';
+import 'package:music_app/core/configs/assets/app_images.dart';
 import 'package:music_app/core/configs/assets/app_vectors.dart';
 import 'package:music_app/core/configs/theme/app_colors.dart';
 import 'package:music_app/data/models/createUserReq.dart';
@@ -44,7 +45,7 @@ class Register extends StatelessWidget {
                     child: Column(
                       children: [
                         Center(
-                          child: SvgPicture.asset(AppVectors.logo, width: 100),
+                          child: Image.asset(AppImages.logo, width: 100),
                         ),
                         SizedBox(height: 30),
                         Text(

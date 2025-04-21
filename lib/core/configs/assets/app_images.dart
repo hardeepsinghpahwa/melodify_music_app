@@ -2,6 +2,7 @@ class AppImages {
   static const basePath = "assets/images/";
   static const extension = ".png";
 
+  static const String logo = "${basePath}logo$extension";
   static const String introBack = "${basePath}intro$extension";
   static const String chooseTheme = "${basePath}chooseTheme$extension";
   static const String bottomDesign = "${basePath}bottom_left$extension";

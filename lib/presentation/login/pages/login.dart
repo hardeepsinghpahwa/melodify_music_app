@@ -12,6 +12,7 @@ import '../../../common/utils.dart';
 import '../../../common/widgets/back_button.dart';
 import '../../../common/widgets/basic_button.dart';
 import '../../../common/widgets/inputField.dart';
+import '../../../core/configs/assets/app_images.dart';
 import '../../../core/configs/assets/app_vectors.dart';
 import '../../../core/configs/theme/app_colors.dart';
 import '../../../services.dart';
@@ -45,7 +46,7 @@ class _LoginState extends State<Login> {
                 child: Column(
                   children: [
                     Center(
-                      child: SvgPicture.asset(AppVectors.logo, width: 100),
+                      child: Image.asset(AppImages.logo, width: 100),
                     ),
                     SizedBox(height: 30),
                     Text(

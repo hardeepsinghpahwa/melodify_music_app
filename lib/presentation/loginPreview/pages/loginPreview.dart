@@ -49,7 +49,7 @@ class LoginPreview extends StatelessWidget {
                       children: [
                         SizedBox(height: 20),
                         Center(
-                          child: SvgPicture.asset(AppVectors.logo, width: 200),
+                          child: Image.asset(AppImages.logo, width: 200),
                         ),
                         SizedBox(height: 50),
                         Text(

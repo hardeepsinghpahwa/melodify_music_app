@@ -9,6 +9,7 @@ import 'package:music_app/presentation/home/pages/home.dart';
 import 'package:music_app/presentation/intro/pages/intro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/configs/assets/app_images.dart';
 import '../../../services.dart';
 import '../../chooseTheme/bloc/theme_cubit.dart';
 
@@ -29,7 +30,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: SvgPicture.asset(AppVectors.logo)));
+    return Scaffold(body: Center(child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: Image.asset(AppImages.logo),
+    )));
   }
 
   Future<void> redirect() async {

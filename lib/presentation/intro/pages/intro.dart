@@ -36,7 +36,7 @@ class _IntroScreenState extends State<IntroScreen> {
                   children: [
                     SizedBox(height: 20),
                     Center(
-                      child: SvgPicture.asset(AppVectors.logo, width: 150),
+                      child: Image.asset(AppImages.logo, width: 150),
                     ),
                     Spacer(),
                     Text(

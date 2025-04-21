@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:music_app/presentation/chooseTheme/bloc/theme_cubit.dart';
 import 'package:music_app/presentation/chooseTheme/widgets/mode.dart';
 import 'package:music_app/presentation/loginPreview/pages/loginPreview.dart';
 
@@ -11,7 +13,7 @@ class ChooseThemeScreen extends StatefulWidget {
 
   final bool fromProfile;
 
-  const ChooseThemeScreen({this.fromProfile=false,super.key});
+  const ChooseThemeScreen({this.fromProfile = false, super.key});
 
   @override
   State<ChooseThemeScreen> createState() => _ChooseThemeScreenState();
@@ -41,7 +43,7 @@ class _ChooseThemeScreenState extends State<ChooseThemeScreen> {
                   children: [
                     SizedBox(height: 20),
                     Center(
-                      child: SvgPicture.asset(AppVectors.logo, width: 150),
+                      child: Image.asset(AppImages.logo, width: 150),
                     ),
                     Spacer(),
                     Text(
@@ -53,23 +55,29 @@ class _ChooseThemeScreenState extends State<ChooseThemeScreen> {
                       ),
                     ),
                     SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Mode(
-                          light: true,
-                        ),
-                        Mode(
-                          light: false,
-                        ),
-                      ],
+                    BlocBuilder<ThemeCubit, ThemeMode>(
+                      builder: (context, state) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Mode(
+                              light: true,
+                              selected: state==ThemeMode.light,
+                            ),
+                            Mode(
+                              light: false,
+                              selected: state==ThemeMode.dark,
+                            ),
+                          ],
+                        );
+                      },
                     ),
                     SizedBox(height: 40),
                     BasicButton(
                       onPressed: () {
-                        if(widget.fromProfile){
+                        if (widget.fromProfile) {
                           Navigator.pop(context);
-                        }else {
+                        } else {
                           Navigator.push(
                             context,
                             MaterialPageRoute(

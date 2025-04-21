@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     //Icon(Icons.search_sharp, size: 40),
                     Spacer(),
-                    SvgPicture.asset(AppVectors.logo, width: 120),
+                    Image.asset(AppImages.logo, width: 80),
                     Spacer(),
                     //Image.asset(AppImages.dotMenu, height: 40),
                     SizedBox(width: 20),
@@ -360,12 +360,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(width: 40),
-                Icon(
-                  Icons.favorite_border,
-                  color: context.isDarkMode?Colors.white:Colors.black,
-                  size: 20,
-                ),
-                SizedBox(width: 10),
+                // Icon(
+                //   Icons.favorite_border,
+                //   color: context.isDarkMode?Colors.white:Colors.black,
+                //   size: 20,
+                // ),
+                // SizedBox(width: 10),
                 Stack(
                   children: <Widget>[
                     Positioned.fill(

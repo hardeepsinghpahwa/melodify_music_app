@@ -107,20 +107,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               );
                             },
                             title: "Logout",
-                            color: Colors.redAccent,
+                            color: Colors.black,
                           ),
                           SizedBox(height: 20),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Column(
                       children: [
-                        GestureDetector(
-                          onTap: () {
+                        settingsTile(
+                          "Theme",
+                          "Change the theme of you app",
+                          () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -130,37 +132,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             );
                           },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
-                            ),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: AppColors.primary,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Change Theme",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
+                          Icons.format_paint_outlined,
                         ),
+
+                        settingsTile(
+                          "Privacy Policy",
+                          "Read the privacy policy of you app",
+                          () {
+                          },
+                          Icons.policy_outlined,
+                        ),
+
+                        settingsTile("Version", "1.0.0", () {}, Icons.history),
                       ],
                     ),
                   ),
                   Spacer(),
                 ],
               ),
-              Visibility(
-                  visible: state.loader,
-                  child: Loader()
-              ),
+              Visibility(visible: state.loader, child: Loader()),
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget settingsTile(
+    String title,
+    String desc,
+    Function() onTap,
+    IconData icon,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            children: [
+              SizedBox(width: 10),
+              Icon(icon, color: AppColors.primary),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: TextStyle(color: Colors.black)),
+                  Text(desc, style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
