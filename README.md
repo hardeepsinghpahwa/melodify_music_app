@@ -68,3 +68,12 @@
 └── main.dart           # Entry point
 </code></pre>
 
+<h2>📂 Sceenshots</h2>
+
+<p align="center">
+  <img src="https://firebasestorage.googleapis.com/v0/b/tastyrecipeapp.appspot.com/o/Screenshot_20250421_203827.png?alt=media&token=4d6f9902-277d-48b9-8d49-e9a96c1c58ba" width="150" />
+  <img src="https://firebasestorage.googleapis.com/v0/b/tastyrecipeapp.appspot.com/o/Screenshot_20250421_203835.png?alt=media&token=84b82963-8237-45aa-a24f-3d58ad74ad38" width="150" />
+  <img src="https://firebasestorage.googleapis.com/v0/b/tastyrecipeapp.appspot.com/o/Screenshot_20250421_203754.png?alt=media&token=151d36e9-4574-4d51-9e12-ebbd96665d8a" width="150" />
+ <img src="https://firebasestorage.googleapis.com/v0/b/tastyrecipeapp.appspot.com/o/Screenshot_20250421_203931.png?alt=media&token=b9ca9b8f-94b1-471d-a07a-c7cc17264585" width="150" />
+</p>
+
