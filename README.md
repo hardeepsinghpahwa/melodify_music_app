@@ -1,4 +1,6 @@
-<h1>🎵 Flutter Music App</h1>
+<img src="https://firebasestorage.googleapis.com/v0/b/tastyrecipeapp.appspot.com/o/logo%20trimmed.png?alt=media&token=206ee3ae-7354-428d-a214-ac540d0156f3" width="300">
+
+<h1>Melodify - A Flutter Music App</h1>
 
 <p>
   A powerful and scalable <strong>Flutter Music App</strong> developed with <strong>Clean Architecture</strong>, 
