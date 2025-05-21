@@ -48,7 +48,7 @@
   <pre><code>git clone https://github.com/hardeepsinghpahwa/melodify_music_app.git</code></pre>
   
   <li>Navigate to the project folder:</li>
-  <pre><code>cd music_app</code></pre>
+  <pre><code>cd melodify_music_app</code></pre>
   
   <li>Install dependencies:</li>
   <pre><code>flutter pub get</code></pre>
