@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:music_app/data/models/createUserReq.dart';
 import 'package:music_app/data/models/signInReq.dart';
 import 'package:music_app/domain/entities/auth/user.dart';
@@ -13,6 +14,8 @@ abstract class AuthFirebaseService {
   Future<Either> signIn(SignInReq req);
 
   Future<Either> getUserDetails();
+
+  Future<Either> signInWithGoogle();
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -89,6 +92,52 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       return Right(entity);
     } on FirebaseException catch (e) {
       return Left("Error");
+    }
+  }
+
+  @override
+  Future<Either> signInWithGoogle() async {
+    try {
+      sl<LoadingBloc>().add(LoadingStartEvent());
+      const List<String> scopes = <String>[
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ];
+
+      GoogleSignIn googleSignIn = GoogleSignIn(
+        // Optional clientId
+        // clientId: 'your-client_id.apps.googleusercontent.com',
+        scopes: scopes,
+      );
+      final googleUser = await googleSignIn.signIn();
+      if (googleUser == null) throw Exception("User cancelled");
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+      final user = userCredential.user!;
+      if (FirebaseAuth.instance.currentUser != null) {
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .set({
+              "name": user.displayName ?? "",
+              "password": "",
+              "email": user.email ?? "",
+            });
+      }
+      sl<LoadingBloc>().add(LoadingStopEvent());
+      return Right("Sign Up Success");
+    } on Exception catch (e) {
+      String message = "Google Sign-In Failed $e";
+      sl<LoadingBloc>().add(LoadingStopEvent());
+      return Left(message);
     }
   }
 }

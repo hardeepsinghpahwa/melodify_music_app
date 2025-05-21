@@ -11,7 +11,9 @@ import 'package:music_app/core/configs/assets/app_images.dart';
 import 'package:music_app/core/configs/assets/app_vectors.dart';
 import 'package:music_app/core/configs/theme/app_colors.dart';
 import 'package:music_app/data/models/createUserReq.dart';
+import 'package:music_app/domain/usecases/googleSignInUseCase.dart';
 import 'package:music_app/domain/usecases/signUpUseCase.dart';
+import 'package:music_app/presentation/dashboard/pages/dashboard.dart';
 import 'package:music_app/presentation/home/pages/home.dart';
 import 'package:music_app/presentation/login/pages/login.dart';
 import 'package:music_app/presentation/register/bloc/loading/loading_bloc.dart';
@@ -44,9 +46,7 @@ class Register extends StatelessWidget {
                     key: _formKey,
                     child: Column(
                       children: [
-                        Center(
-                          child: Image.asset(AppImages.logo, width: 100),
-                        ),
+                        Center(child: Image.asset(AppImages.logo, width: 100)),
                         SizedBox(height: 30),
                         Text(
                           "Register",
@@ -142,11 +142,11 @@ class Register extends StatelessWidget {
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => HomeScreen(),
+                                      builder: (context) => Dashboard(),
                                     ),
-                                        (route) => false,
+                                    (route) => false,
                                   );
-                                  },
+                                },
                               );
                             }
                           },
@@ -164,7 +164,21 @@ class Register extends StatelessWidget {
                         ),
                         SizedBox(height: 30),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () async {
+                            var result= await sl<GoogleSignUpUseCase>().call();
+                            result.fold((ifLeft){
+                              Utils.showErrorSnackbar(ifLeft, context);
+                            }, (ifRight){
+                              Utils.showSuccessSnackbar(ifRight, context);
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Dashboard(),
+                                ),
+                                    (route) => false,
+                              );
+                            });
+                          },
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 10,

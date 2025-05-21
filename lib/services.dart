@@ -13,6 +13,7 @@ import 'package:music_app/domain/usecases/geAllSongsUseCase.dart';
 import 'package:music_app/domain/usecases/getFavouritesUseCase.dart';
 import 'package:music_app/domain/usecases/getTopSongsUseCase.dart';
 import 'package:music_app/domain/usecases/getUseDetailsUseCase.dart';
+import 'package:music_app/domain/usecases/googleSignInUseCase.dart';
 import 'package:music_app/domain/usecases/searchSongUseCase.dart';
 import 'package:music_app/domain/usecases/signInUseCase.dart';
 import 'package:music_app/domain/usecases/signUpUseCase.dart';
@@ -73,5 +74,7 @@ Future<void> initDependencies() async{
   sl.registerSingleton<GetUserDetailsUseCase>(GetUserDetailsUseCase());
 
   sl.registerSingleton<ProfileBloc>(ProfileBloc());
+
+  sl.registerSingleton<GoogleSignUpUseCase>(GoogleSignUpUseCase());
 
 }

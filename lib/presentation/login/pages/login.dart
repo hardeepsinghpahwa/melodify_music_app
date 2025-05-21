@@ -15,6 +15,7 @@ import '../../../common/widgets/inputField.dart';
 import '../../../core/configs/assets/app_images.dart';
 import '../../../core/configs/assets/app_vectors.dart';
 import '../../../core/configs/theme/app_colors.dart';
+import '../../../domain/usecases/googleSignInUseCase.dart';
 import '../../../services.dart';
 import '../../dashboard/pages/dashboard.dart';
 import '../../home/pages/home.dart';
@@ -160,7 +161,21 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 30),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        var result= await sl<GoogleSignUpUseCase>().call();
+                        result.fold((ifLeft){
+                          Utils.showErrorSnackbar(ifLeft, context);
+                        }, (ifRight){
+                          Utils.showSuccessSnackbar(ifRight, context);
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Dashboard(),
+                            ),
+                                (route) => false,
+                          );
+                        });
+                      },
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 10,

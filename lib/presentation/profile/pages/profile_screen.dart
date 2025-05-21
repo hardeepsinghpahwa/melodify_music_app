@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music_app/common/helpers/is_dark_mode.dart';
-import 'package:music_app/core/configs/assets/app_images.dart';
 import 'package:music_app/core/configs/theme/app_colors.dart';
 import 'package:music_app/presentation/chooseTheme/pages/chooseTheme.dart';
 import 'package:music_app/presentation/intro/pages/intro.dart';
@@ -73,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               shape: BoxShape.circle,
                               color: AppColors.lightGrey,
                             ),
-                            child: Image.asset(AppImages.preview),
+                            child: Icon(Icons.person, size: 50),
                           ),
                           SizedBox(height: 10),
                           Text(
@@ -133,17 +132,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                           },
                           Icons.format_paint_outlined,
+                          context,
                         ),
 
                         settingsTile(
                           "Privacy Policy",
                           "Read the privacy policy of you app",
-                          () {
-                          },
+                          () {},
                           Icons.policy_outlined,
+                          context,
                         ),
 
-                        settingsTile("Version", "1.0.0", () {}, Icons.history),
+                        settingsTile(
+                          "Version",
+                          "1.0.0",
+                          () {},
+                          Icons.history,
+                          context,
+                        ),
                       ],
                     ),
                   ),
@@ -163,6 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String desc,
     Function() onTap,
     IconData icon,
+    BuildContext ctx,
   ) {
     return Material(
       color: Colors.transparent,
@@ -178,7 +185,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: TextStyle(color: Colors.black)),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: ctx.isDarkMode ? Colors.white : Colors.black,
+                    ),
+                  ),
                   Text(desc, style: TextStyle(color: Colors.grey)),
                 ],
               ),

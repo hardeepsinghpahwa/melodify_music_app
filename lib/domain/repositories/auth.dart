@@ -9,4 +9,7 @@ abstract class AuthRepository{
   Future<Either> signIn(SignInReq req);
 
   Future<Either> getUserDetails();
+
+  Future<Either> signInWithGoogle();
+
 }

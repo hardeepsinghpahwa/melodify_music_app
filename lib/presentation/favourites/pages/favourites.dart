@@ -133,7 +133,15 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                             itemCount: state.songFavourites!.length,
                           ),
                         )
-                        : SizedBox(),
+                        : Center(child: Padding(
+                          padding: const EdgeInsets.only(top: 100.0),
+                          child:  Column(
+                            children: [
+                              Image.asset(AppImages.noData,width: 200,),
+                              Text("No Favourites Yet!")
+                            ],
+                          ),
+                        )),
                   ],
                 ),
               ),

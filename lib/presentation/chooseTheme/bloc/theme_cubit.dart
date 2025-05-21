@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:music_app/core/configs/theme/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../services.dart';
@@ -12,6 +14,7 @@ class ThemeCubit extends Cubit<ThemeMode> {
       "isDarkTheme",
       mode == ThemeMode.dark ? true : false,
     );
+
 
     emit(mode);
   }

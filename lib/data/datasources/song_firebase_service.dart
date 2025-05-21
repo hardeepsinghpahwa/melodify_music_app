@@ -108,6 +108,10 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
         ids.add(i.id);
       }
 
+      if(ids.isEmpty){
+        return Right(songs);
+      }
+
       var data =
           await FirebaseFirestore.instance
               .collection("Songs")

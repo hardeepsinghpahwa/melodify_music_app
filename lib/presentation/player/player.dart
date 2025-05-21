@@ -69,13 +69,15 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
       sl<PlayerPositionBloc>().add(
         PlayerPositionChangeEvent(duration.inSeconds.toDouble()),
       );
+    });
 
-      if (duration.inSeconds == (sl<PlayerPositionBloc>().state.duration + 1)) {
-        if (currentIndex != widget.songs.length - 1) {
-          changeSong(widget.songs, currentIndex + 1);
-        } else {
-          changeSong(widget.songs, 0);
-        }
+    player.onPlayerComplete.listen((event) {
+      if (currentIndex != widget.songs.length - 1) {
+        currentIndex++;
+        changeSong(widget.songs, currentIndex);
+      } else {
+        currentIndex = 0;
+        changeSong(widget.songs, currentIndex);
       }
     });
 
@@ -163,7 +165,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                       children: [
                         SliderTheme(
                           data: SliderThemeData(
-                            thumbColor: Colors.green,
+                            thumbColor: AppColors.primary,
                             thumbShape: RoundSliderThumbShape(
                               enabledThumbRadius: 8,
                             ),
@@ -171,7 +173,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                           child: Slider(
                             allowedInteraction: SliderInteraction.tapAndSlide,
                             padding: EdgeInsets.zero,
-                            activeColor: AppColors.green,
+                            activeColor: AppColors.primary,
                             value: state.position.toDouble(),
                             min: 0.0,
                             max: state.duration.toDouble() + 1,
@@ -240,7 +242,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
-                              color: AppColors.green,
+                              color: AppColors.primary,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
@@ -277,7 +279,12 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                             state.favourite
                                 ? Icons.favorite
                                 : Icons.favorite_border,
-                            color: state.favourite ? Colors.red : context.isDarkMode?Colors.white:Colors.black,
+                            color:
+                                state.favourite
+                                    ? Colors.red
+                                    : context.isDarkMode
+                                    ? Colors.white
+                                    : Colors.black,
                             size: 30,
                           ),
                         ),

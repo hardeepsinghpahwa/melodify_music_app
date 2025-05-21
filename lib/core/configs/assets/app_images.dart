@@ -11,6 +11,5 @@ class AppImages {
   static const String aujla = "${basePath}aujla$extension";
   static const String preview = "${basePath}preview$extension";
   static const String dotMenu = "${basePath}threeDot$extension";
-
-
+  static const String noData = "${basePath}noData$extension";
 }
