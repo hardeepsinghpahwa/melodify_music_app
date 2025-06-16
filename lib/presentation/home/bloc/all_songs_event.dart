@@ -1,8 +1,12 @@
 part of 'all_songs_bloc.dart';
 
 @immutable
-sealed class AllSongsEvent {}
+sealed class SongsEvent {}
 
-class AllSongsLoadingEvent extends AllSongsEvent {}
+class AllSongsLoadingEvent extends SongsEvent {}
 
-class Top10SongsLoadingEvent extends AllSongsEvent {}
+class Top10SongsLoadingEvent extends SongsEvent {}
+
+class PublicPlaylistsEvent extends SongsEvent {}
+
+class MyPlaylistsEvent extends SongsEvent {}

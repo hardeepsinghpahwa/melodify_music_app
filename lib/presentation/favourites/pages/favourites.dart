@@ -49,7 +49,9 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    state.songFavourites != null &&
+                    state.isLoading ?? true
+                        ? SizedBox()
+                        : state.songFavourites != null &&
                             state.songFavourites!.isNotEmpty
                         ? Expanded(
                           child: ListView.builder(
@@ -66,7 +68,11 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (ctx) => AudioPlayerScreen(songs: state.songFavourites!, index: index),
+                                          builder:
+                                              (ctx) => AudioPlayerScreen(
+                                                songs: state.songFavourites!,
+                                                index: index,
+                                              ),
                                         ),
                                       );
                                     },
@@ -133,22 +139,21 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                             itemCount: state.songFavourites!.length,
                           ),
                         )
-                        : Center(child: Padding(
-                          padding: const EdgeInsets.only(top: 100.0),
-                          child:  Column(
-                            children: [
-                              Image.asset(AppImages.noData,width: 200,),
-                              Text("No Favourites Yet!")
-                            ],
+                        : Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 100.0),
+                            child: Column(
+                              children: [
+                                Image.asset(AppImages.noData, width: 200),
+                                Text("No Favourites Yet!"),
+                              ],
+                            ),
                           ),
-                        )),
+                        ),
                   ],
                 ),
               ),
-              Visibility(
-                visible: state.isLoading ?? false,
-                child: Loader()
-              ),
+              Visibility(visible: state.isLoading ?? false, child: Loader()),
             ],
           );
         },

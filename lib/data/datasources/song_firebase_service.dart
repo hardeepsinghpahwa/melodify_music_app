@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:music_app/data/models/playlistModel.dart';
 import 'package:music_app/data/models/song.dart';
+import 'package:music_app/domain/entities/song/playlist.dart';
 import 'package:music_app/domain/entities/song/song.dart';
 
 abstract class SongFirebaseService {
@@ -16,6 +20,10 @@ abstract class SongFirebaseService {
   Future<Either> isFavourite(String songId);
 
   Future<Either> searchSong(String searchText);
+
+  Future<Either> getPublicPlaylists();
+
+  Future<Either> getPlaylistSongs(String playlistId);
 }
 
 class SongFirebaseServiceImpl extends SongFirebaseService {
@@ -108,8 +116,52 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
         ids.add(i.id);
       }
 
-      if(ids.isEmpty){
+      if (ids.isEmpty) {
         return Right(songs);
+      }
+
+      var data =
+          await FirebaseFirestore.instance
+              .collection("Songs")
+              .where(FieldPath.documentId, whereIn: ids)
+              .get();
+
+      for (var element in data.docs) {
+        var songModel = SongModel.fromJson(element.data());
+        songs.add(
+          SongEntity(
+            songModel.title ?? "",
+            songModel.artist ?? "",
+            songModel.duration ?? "",
+            songModel.image ?? "",
+            songModel.link ?? "",
+            element.id,
+          ),
+        );
+      }
+
+      return Right(songs);
+    } on FirebaseException catch (e) {
+      return Left("Something went wrong");
+    }
+  }
+
+  @override
+  Future<Either> getPlaylistSongs(String playlistId) async {
+    List<SongEntity> songs = [];
+
+    print("PLAYLIST ID $playlistId");
+    try {
+      var playlistIds =
+          await FirebaseFirestore.instance
+              .collection("Playlists")
+              .doc(playlistId)
+              .collection("songs")
+              .get();
+
+      List<String> ids = [];
+      for (var i in playlistIds.docs) {
+        ids.add(i['songId']);
       }
 
       var data =
@@ -220,6 +272,31 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
       }
 
       return Right(songs);
+    } on FirebaseException catch (e) {
+      return Left("Something went wrong");
+    }
+  }
+
+  @override
+  Future<Either> getPublicPlaylists() async {
+    List<Playlist> publicPlaylists = [];
+
+    try {
+      var playlists =
+          await FirebaseFirestore.instance.collection("Playlists").get();
+
+      for (var element in playlists.docs) {
+        var playlistModel = PlaylistModel.fromJson(element.data());
+        publicPlaylists.add(
+          Playlist(
+            playlistModel.name ?? "",
+            playlistModel.image ?? "",
+            element.id,
+          ),
+        );
+      }
+
+      return Right(publicPlaylists);
     } on FirebaseException catch (e) {
       return Left("Something went wrong");
     }

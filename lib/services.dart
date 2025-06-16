@@ -1,4 +1,3 @@
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get_it/get_it.dart';
 import 'package:music_app/data/datasources/auth_firebase_service.dart';
@@ -11,6 +10,7 @@ import 'package:music_app/domain/usecases/checkFavouriteUseCase.dart';
 import 'package:music_app/domain/usecases/favouriteUseCase.dart';
 import 'package:music_app/domain/usecases/geAllSongsUseCase.dart';
 import 'package:music_app/domain/usecases/getFavouritesUseCase.dart';
+import 'package:music_app/domain/usecases/getPublicPlaylistsUseCase.dart';
 import 'package:music_app/domain/usecases/getTopSongsUseCase.dart';
 import 'package:music_app/domain/usecases/getUseDetailsUseCase.dart';
 import 'package:music_app/domain/usecases/googleSignInUseCase.dart';
@@ -22,14 +22,16 @@ import 'package:music_app/presentation/explore/bloc/explore_bloc.dart';
 import 'package:music_app/presentation/favourites/bloc/favourites_bloc.dart';
 import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
+import 'package:music_app/presentation/playlistDetails/playlistDetailsBloc/playlist_details_bloc.dart';
 import 'package:music_app/presentation/profile/bloc/profile_bloc.dart';
 import 'package:music_app/presentation/register/bloc/loading/loading_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final sl=GetIt.instance;
+import 'domain/usecases/getPlaylistSongsUseCase.dart';
 
-Future<void> initDependencies() async{
+final sl = GetIt.instance;
 
+Future<void> initDependencies() async {
   sl.registerSingleton<AuthFirebaseService>(AuthFirebaseServiceImpl());
 
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl());
@@ -77,4 +79,9 @@ Future<void> initDependencies() async{
 
   sl.registerSingleton<GoogleSignUpUseCase>(GoogleSignUpUseCase());
 
+  sl.registerSingleton<GetPublicPlaylistUseCase>(GetPublicPlaylistUseCase());
+
+  sl.registerSingleton<GetPlaylistSongsUseCase>(GetPlaylistSongsUseCase());
+
+  sl.registerSingleton<PlaylistDetailsBloc>(PlaylistDetailsBloc());
 }

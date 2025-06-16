@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:music_app/common/helpers/is_dark_mode.dart';
 import 'package:music_app/core/configs/assets/app_images.dart';
-import 'package:music_app/core/configs/assets/app_vectors.dart';
 import 'package:music_app/core/configs/theme/app_colors.dart';
+import 'package:music_app/domain/entities/song/playlist.dart';
 import 'package:music_app/domain/entities/song/song.dart';
 import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
 import 'package:music_app/presentation/player/player.dart';
+import 'package:music_app/presentation/playlistDetails/pages/playlistDetails.dart';
 
 import '../../../services.dart';
 
@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       sl<AllSongsBloc>().add(AllSongsLoadingEvent());
       sl<AllSongsBloc>().add(Top10SongsLoadingEvent());
+      sl<AllSongsBloc>().add(PublicPlaylistsEvent());
     });
   }
 
@@ -101,11 +102,53 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(height: 20),
                 Text(
+                  "Playlists",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: context.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                SizedBox(height: 10),
+                BlocBuilder<AllSongsBloc, AllSongsState>(
+                  builder: (context, state) {
+                    if (state.loading == true) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      );
+                    }
+
+                    if ((state.publicPlaylists ?? []).isNotEmpty) {
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: state.publicPlaylists!.length,
+                        // This next line does the trick.
+                        itemBuilder: (BuildContext context, int index) {
+                          return playlistItem(
+                            state.publicPlaylists ?? [],
+                            index,
+                          );
+                        },
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 3,
+                        ),
+                      );
+                    }
+                    return SizedBox();
+                  },
+                ),
+                SizedBox(height: 20),
+                Text(
                   "Top 10",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    color: context.isDarkMode?Colors.white:Colors.black,
+                    color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
                 ),
                 SizedBox(height: 10),
@@ -121,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     if ((state.topSongs ?? []).isNotEmpty) {
                       return SizedBox(
-                        height: 220,
+                        height: 180,
                         child: ListView.builder(
                           itemCount: state.topSongs!.length,
                           // This next line does the trick.
@@ -136,26 +179,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
                 SizedBox(height: 30),
-                Row(
-                  children: [
-                    Text(
-                      "Playlist",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: context.isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    Spacer(),
-                    Text(
-                      "See More",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: context.isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    SizedBox(width: 20),
-                  ],
+                Text(
+                  "Popular",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: context.isDarkMode ? Colors.white : Colors.black,
+                  ),
                 ),
                 SizedBox(height: 10),
                 BlocBuilder<AllSongsBloc, AllSongsState>(
@@ -175,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shrinkWrap: true,
                         itemCount: songs.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return playlistItem(songs, index);
+                          return popularItem(songs, index);
                         },
                       );
                     }
@@ -200,8 +230,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Stack(
             children: [
               Container(
-                width: 160,
-                height: 220,
+                width: 140,
+                height: 180,
                 clipBehavior: Clip.antiAlias,
                 margin: EdgeInsets.only(left: index == 0 ? 0 : 10, right: 10),
                 decoration: BoxDecoration(
@@ -300,11 +330,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget playlistItem(List<SongEntity> songs, int index) {
+  Widget popularItem(List<SongEntity> songs, int index) {
     return Padding(
       padding: const EdgeInsets.only(right: 20, bottom: 5),
       child: Material(
-        color: context.isDarkMode?Colors.transparent:Colors.white,
+        color: context.isDarkMode ? Colors.transparent : Colors.white,
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
@@ -325,10 +355,12 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(width: 10),
-                Image.network(songs[index].image,
+                Image.network(
+                  songs[index].image,
                   width: 50,
                   height: 50,
-                  fit: BoxFit.cover,),
+                  fit: BoxFit.cover,
+                ),
                 SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,7 +371,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: context.isDarkMode?Colors.white:Colors.black,
+                        color: context.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
                     Text(
@@ -347,7 +379,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       songs[index].artist,
                       style: TextStyle(
                         fontSize: 10,
-                        color: context.isDarkMode?Colors.white:Colors.black,
+                        color: context.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
                   ],
@@ -356,7 +388,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   songs[index].duration.toString(),
                   style: TextStyle(
-                    color: context.isDarkMode?Colors.white:Colors.black,
+                    color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
                 ),
                 SizedBox(width: 40),
@@ -384,6 +416,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget playlistItem(List<Playlist> playlists, int index) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 20, bottom: 5),
+      child: Material(
+        color: context.isDarkMode ? Colors.grey : Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: () async {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (ctx) => PlaylistDetails(playlistDetails: playlists[index]),
+              ),
+            );
+          },
+          child: Row(
+            children: [
+              SizedBox(width: 10),
+              Image.network(playlists[index].image),
+              SizedBox(width: 10),
+              Text(playlists[index].name),
+            ],
           ),
         ),
       ),

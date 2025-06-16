@@ -9,6 +9,7 @@ import 'package:music_app/presentation/explore/bloc/explore_bloc.dart';
 import 'package:music_app/presentation/favourites/bloc/favourites_bloc.dart';
 import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
+import 'package:music_app/presentation/playlistDetails/playlistDetailsBloc/playlist_details_bloc.dart';
 import 'package:music_app/presentation/profile/bloc/profile_bloc.dart';
 import 'package:music_app/presentation/register/bloc/loading/loading_bloc.dart';
 import 'package:music_app/presentation/splash/pages/splashScreen.dart';
@@ -37,11 +38,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => sl<FavouritesBloc>()),
         BlocProvider(create: (_) => sl<ExploreBloc>()),
         BlocProvider(create: (_) => sl<ProfileBloc>()),
+        BlocProvider(create: (_) => sl<PlaylistDetailsBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder:
             (context, mode) => MaterialApp(
-              title: 'Flutter Demo',
+              title: 'Melodify',
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               themeMode: mode,

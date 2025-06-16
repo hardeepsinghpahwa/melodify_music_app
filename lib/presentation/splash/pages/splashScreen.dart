@@ -30,33 +30,38 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50.0),
-      child: Image.asset(AppImages.logo),
-    )));
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50.0),
+          child: Image.asset(AppImages.logo),
+        ),
+      ),
+    );
   }
 
   Future<void> redirect() async {
+    bool? isDarkTheme = sl<SharedPreferences>().getBool("isDarkTheme");
 
-    bool? isDarkTheme=sl<SharedPreferences>().getBool("isDarkTheme");
-
-    if(isDarkTheme!=null && isDarkTheme){
+    if (isDarkTheme != null && isDarkTheme) {
       context.read<ThemeCubit>().updateTheme(ThemeMode.dark);
-    }else{
+    } else {
       context.read<ThemeCubit>().updateTheme(ThemeMode.light);
     }
 
     await Future.delayed(Duration(seconds: 2));
 
     if (FirebaseAuth.instance.currentUser != null) {
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => Dashboard()),
+        (Route<dynamic> route) => false,
       );
     } else {
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => IntroScreen()),
+        (Route<dynamic> route) => false,
       );
     }
   }

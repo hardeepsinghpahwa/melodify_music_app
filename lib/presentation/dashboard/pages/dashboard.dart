@@ -10,6 +10,7 @@ import 'package:music_app/presentation/explore/pages/explore.dart';
 import 'package:music_app/presentation/favourites/pages/favourites.dart';
 import 'package:music_app/presentation/home/pages/home.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
+import 'package:music_app/presentation/playlistDetails/pages/playlistDetails.dart';
 import 'package:music_app/presentation/profile/pages/profile_screen.dart';
 
 import '../../../services.dart';
@@ -23,17 +24,23 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(resizeToAvoidBottomInset: false,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.lightGrey,
       body: SafeArea(
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 60),
+              padding: const EdgeInsets.only(bottom: 50),
               child: PageView(
                 physics: NeverScrollableScrollPhysics(),
                 controller: pageController,
-                children: [HomeScreen(), ExploreScreen(), FavouritesScreen(),ProfileScreen()],
+                children: [
+                  HomeScreen(),
+                  ExploreScreen(),
+                  FavouritesScreen(),
+                  ProfileScreen(),
+                ],
               ),
             ),
             Positioned(
@@ -60,10 +67,16 @@ class Dashboard extends StatelessWidget {
                           },
                           child: Container(
                             clipBehavior: Clip.antiAlias,
-                            margin: EdgeInsets.all(5),
+                            padding: EdgeInsets.symmetric(horizontal: 5),
                             decoration: BoxDecoration(
-                              color: context.isDarkMode?Colors.grey.shade500:AppColors.lightGrey,
-                              borderRadius: BorderRadius.circular(10),
+                              color:
+                                  context.isDarkMode
+                                      ? Colors.grey.shade500
+                                      : AppColors.lightGrey,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
                             ),
                             child: Column(
                               children: [
@@ -71,8 +84,8 @@ class Dashboard extends StatelessWidget {
                                   children: [
                                     Image.network(
                                       state.currentSong?.image ?? "",
-                                      width: 60,
-                                      height: 60,
+                                      width: 50,
+                                      height: 50,
                                       fit: BoxFit.cover,
                                     ),
                                     SizedBox(width: 10),
@@ -84,8 +97,11 @@ class Dashboard extends StatelessWidget {
                                           state.currentSong?.title ?? "",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                            color: context.isDarkMode?Colors.white:Colors.grey
+                                            fontSize: 14,
+                                            color:
+                                                context.isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.grey,
                                           ),
                                         ),
                                         Text(
@@ -130,8 +146,8 @@ class Dashboard extends StatelessWidget {
                                         }
                                       },
                                       child: Container(
-                                        width: 40,
-                                        height: 40,
+                                        width: 30,
+                                        height: 30,
                                         decoration: BoxDecoration(
                                           color: AppColors.primary,
                                           shape: BoxShape.circle,
@@ -141,7 +157,7 @@ class Dashboard extends StatelessWidget {
                                               ? Icons.play_arrow
                                               : Icons.pause,
                                           color: Colors.white,
-                                          size: 25,
+                                          size: 20,
                                         ),
                                       ),
                                     ),
@@ -200,8 +216,11 @@ class Dashboard extends StatelessWidget {
                     },
                   ),
                   Container(
-                    height: 60,
-                    color: context.isDarkMode?AppColors.darkBackground:Colors.white,
+                    height: 50,
+                    color:
+                        context.isDarkMode
+                            ? AppColors.darkBackground
+                            : Colors.white,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -232,19 +251,6 @@ class Dashboard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              state == valueState
-                  ? Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(5),
-                        bottomRight: Radius.circular(5),
-                      ),
-                    ),
-                    width: 30,
-                    height: 4,
-                  )
-                  : SizedBox(),
               SizedBox(height: 10),
               SvgPicture.asset(
                 icon,
@@ -255,6 +261,21 @@ class Dashboard extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
+              Spacer(),
+              state == valueState
+                  ? Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(5),
+                        bottomRight: Radius.circular(5),
+                      ),
+                    ),
+                    width: 30,
+                    height: 2,
+                  )
+                  : SizedBox(),
+              SizedBox(height: 5),
             ],
           ),
         );

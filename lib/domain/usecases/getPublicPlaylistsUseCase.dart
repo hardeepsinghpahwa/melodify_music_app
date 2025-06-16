@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:music_app/core/useCases/usecase.dart';
-import 'package:music_app/domain/repositories/songRepo.dart';
 
 import '../../services.dart';
+import '../repositories/songRepo.dart';
 
-class TopSongsUseCase extends UseCase<Either, dynamic> {
+class GetPublicPlaylistUseCase extends UseCase<Either, dynamic> {
   @override
   Future<Either> call({params}) {
-    return sl<SongRepository>().getTopSongs();
+    return sl<SongRepository>().getPublicPlaylists();
   }
 }
