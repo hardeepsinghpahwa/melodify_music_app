@@ -10,3 +10,10 @@ class Top10SongsLoadingEvent extends SongsEvent {}
 class PublicPlaylistsEvent extends SongsEvent {}
 
 class MyPlaylistsEvent extends SongsEvent {}
+
+class CreateNewPlaylistEvent extends SongsEvent {
+
+  final String name;
+
+  CreateNewPlaylistEvent(this.name);
+}

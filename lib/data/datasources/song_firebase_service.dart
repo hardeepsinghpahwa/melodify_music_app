@@ -24,6 +24,8 @@ abstract class SongFirebaseService {
   Future<Either> getPublicPlaylists();
 
   Future<Either> getPlaylistSongs(String playlistId);
+
+  Future<Either> createNewPlaylist(String name);
 }
 
 class SongFirebaseServiceImpl extends SongFirebaseService {
@@ -298,7 +300,23 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
 
       return Right(publicPlaylists);
     } on FirebaseException catch (e) {
-      return Left("Something went wrong");
+      return Left("Something went wrong $e");
+    }
+  }
+
+  @override
+  Future<Either> createNewPlaylist(String name) async {
+    try {
+      var instance = FirebaseFirestore.instance.collection("Playlists");
+
+      await instance.add({
+        "name": name,
+        "added_by": FirebaseAuth.instance.currentUser?.uid ?? "",
+      });
+
+      return Right("");
+    } on FirebaseException catch (e) {
+      return Left("Something went wrong $e");
     }
   }
 }

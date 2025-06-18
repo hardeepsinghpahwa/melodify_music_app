@@ -28,7 +28,6 @@ class SongRepositoryImpl extends SongRepository {
   @override
   Future<Either> getTopSongs() {
     return sl<SongFirebaseService>().getTopSongs();
-
   }
 
   @override
@@ -44,5 +43,10 @@ class SongRepositoryImpl extends SongRepository {
   @override
   Future<Either> getPlaylistSongs(String playlistId) {
     return sl<SongFirebaseService>().getPlaylistSongs(playlistId);
+  }
+
+  @override
+  Future<Either> createNewPlaylist(String name) {
+    return sl<SongFirebaseService>().createNewPlaylist(name);
   }
 }

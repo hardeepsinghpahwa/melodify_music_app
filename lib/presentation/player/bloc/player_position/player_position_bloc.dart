@@ -26,7 +26,7 @@ class PlayerPositionBloc extends Bloc<PlayerEvent, PlayerCurrentState> {
 
     on<ChangeSongEvent>((event, emit) {
       emit(
-        state.copyWith(currentSong: event.songs[event.currentIndex], position: 0, isPlaying: true,songs: event.songs,currentIndex: event.currentIndex),
+        state.copyWith(favourite: false,currentSong: event.songs[event.currentIndex], position: 0, isPlaying: true,songs: event.songs,currentIndex: event.currentIndex),
       );
     });
 

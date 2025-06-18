@@ -10,5 +10,6 @@ abstract class SongRepository{
   Future<Either> searchSong(String searchText);
   Future<Either> getPublicPlaylists();
   Future<Either> getPlaylistSongs(String playlistId);
+  Future<Either> createNewPlaylist(String name);
 
 }

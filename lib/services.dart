@@ -7,6 +7,7 @@ import 'package:music_app/data/repository/song_repository_impl.dart';
 import 'package:music_app/domain/repositories/auth.dart';
 import 'package:music_app/domain/repositories/songRepo.dart';
 import 'package:music_app/domain/usecases/checkFavouriteUseCase.dart';
+import 'package:music_app/domain/usecases/createNewPlaylistUseCase.dart';
 import 'package:music_app/domain/usecases/favouriteUseCase.dart';
 import 'package:music_app/domain/usecases/geAllSongsUseCase.dart';
 import 'package:music_app/domain/usecases/getFavouritesUseCase.dart';
@@ -84,4 +85,8 @@ Future<void> initDependencies() async {
   sl.registerSingleton<GetPlaylistSongsUseCase>(GetPlaylistSongsUseCase());
 
   sl.registerSingleton<PlaylistDetailsBloc>(PlaylistDetailsBloc());
+
+  sl.registerSingleton<CreateNewPlaylistUseCase>(CreateNewPlaylistUseCase());
+
+
 }

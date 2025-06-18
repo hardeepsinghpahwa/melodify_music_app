@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music_app/common/helpers/is_dark_mode.dart';
+import 'package:music_app/common/widgets/inputField.dart';
 import 'package:music_app/core/configs/assets/app_images.dart';
 import 'package:music_app/core/configs/theme/app_colors.dart';
 import 'package:music_app/domain/entities/song/playlist.dart';
@@ -9,6 +10,8 @@ import 'package:music_app/presentation/home/bloc/all_songs_bloc.dart';
 import 'package:music_app/presentation/player/player.dart';
 import 'package:music_app/presentation/playlistDetails/pages/playlistDetails.dart';
 
+import '../../../common/utils.dart';
+import '../../../common/widgets/text_button.dart';
 import '../../../services.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,6 +22,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController playlistNameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -34,189 +39,201 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(left: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 10),
-                Row(
+        child: BlocConsumer<AllSongsBloc, AllSongsState>(
+          listener: (context, state) {
+            if (state.msg.isNotEmpty) {
+              Utils.showInfoSnackbar(state.msg, context);
+              state.copyWith(msg: "");
+            }
+          },
+          builder: (context, state) {
+            return Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //Icon(Icons.search_sharp, size: 40),
-                    Spacer(),
-                    Image.asset(AppImages.logo, width: 80),
-                    Spacer(),
-                    //Image.asset(AppImages.dotMenu, height: 40),
-                    SizedBox(width: 20),
-                  ],
-                ),
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(right: 20),
-                      padding: EdgeInsets.only(left: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: AppColors.primary,
-                      ),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Introducing",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  Text(
-                                    "48 Rhymes",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 22,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Karan Aujla",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        //Icon(Icons.search_sharp, size: 40),
+                        Spacer(),
+                        Image.asset(AppImages.logo, width: 80),
+                        Spacer(),
+                        //Image.asset(AppImages.dotMenu, height: 40),
+                        SizedBox(width: 20),
+                      ],
+                    ),
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(right: 10),
+                          padding: EdgeInsets.only(left: 20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: AppColors.primary,
                           ),
-                          Image.asset(AppImages.topSwirls),
-                        ],
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Introducing",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      Text(
+                                        "48 Rhymes",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Karan Aujla",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Image.asset(AppImages.topSwirls),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 40),
+                          child: Image.asset(AppImages.aujla, height: 160),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      "Playlists",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: context.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 40),
-                      child: Image.asset(AppImages.aujla, height: 160),
+                    SizedBox(height: 10),
+                    Builder(
+                      builder: (context) {
+                        if (state.loading == true) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          );
+                        }
+
+                        if ((state.publicPlaylists ?? []).isNotEmpty) {
+                          return GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: state.publicPlaylists!.length,
+                            // This next line does the trick.
+                            itemBuilder: (BuildContext context, int index) {
+                              return playlistItem(
+                                state.publicPlaylists ?? [],
+                                index,
+                              );
+                            },
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10,
+                                  childAspectRatio: 3,
+                                ),
+                          );
+                        }
+                        return SizedBox();
+                      },
                     ),
+                    SizedBox(height: 20),
+                    Text(
+                      "Top 10",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: context.isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Builder(
+                      builder: (context) {
+                        if (state.loading == true) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          );
+                        }
+
+                        if ((state.topSongs ?? []).isNotEmpty) {
+                          return SizedBox(
+                            height: 180,
+                            child: ListView.builder(
+                              itemCount: state.topSongs!.length,
+                              // This next line does the trick.
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) {
+                                return item(index, state.topSongs!);
+                              },
+                            ),
+                          );
+                        }
+                        return SizedBox();
+                      },
+                    ),
+                    SizedBox(height: 30),
+                    Text(
+                      "Popular",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: context.isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Builder(
+                      builder: (context) {
+                        if (state.loading == true) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          );
+                        }
+
+                        if ((state.allSongs ?? []).isNotEmpty) {
+                          var songs = state.allSongs!;
+                          return ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: songs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return popularItem(songs, index);
+                            },
+                          );
+                        }
+
+                        return SizedBox();
+                      },
+                    ),
+                    SizedBox(height: 70),
                   ],
                 ),
-                SizedBox(height: 20),
-                Text(
-                  "Playlists",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: context.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-                SizedBox(height: 10),
-                BlocBuilder<AllSongsBloc, AllSongsState>(
-                  builder: (context, state) {
-                    if (state.loading == true) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                        ),
-                      );
-                    }
-
-                    if ((state.publicPlaylists ?? []).isNotEmpty) {
-                      return GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: state.publicPlaylists!.length,
-                        // This next line does the trick.
-                        itemBuilder: (BuildContext context, int index) {
-                          return playlistItem(
-                            state.publicPlaylists ?? [],
-                            index,
-                          );
-                        },
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          childAspectRatio: 3,
-                        ),
-                      );
-                    }
-                    return SizedBox();
-                  },
-                ),
-                SizedBox(height: 20),
-                Text(
-                  "Top 10",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: context.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-                SizedBox(height: 10),
-                BlocBuilder<AllSongsBloc, AllSongsState>(
-                  builder: (context, state) {
-                    if (state.loading == true) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                        ),
-                      );
-                    }
-
-                    if ((state.topSongs ?? []).isNotEmpty) {
-                      return SizedBox(
-                        height: 180,
-                        child: ListView.builder(
-                          itemCount: state.topSongs!.length,
-                          // This next line does the trick.
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
-                            return item(index, state.topSongs!);
-                          },
-                        ),
-                      );
-                    }
-                    return SizedBox();
-                  },
-                ),
-                SizedBox(height: 30),
-                Text(
-                  "Popular",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: context.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-                SizedBox(height: 10),
-                BlocBuilder<AllSongsBloc, AllSongsState>(
-                  builder: (context, state) {
-                    if (state.loading == true) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                        ),
-                      );
-                    }
-
-                    if ((state.allSongs ?? []).isNotEmpty) {
-                      var songs = state.allSongs!;
-                      return ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: songs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return popularItem(songs, index);
-                        },
-                      );
-                    }
-
-                    return SizedBox();
-                  },
-                ),
-                SizedBox(height: 70),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -332,7 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget popularItem(List<SongEntity> songs, int index) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20, bottom: 5),
+      padding: const EdgeInsets.only(right: 20, bottom: 15),
       child: Material(
         color: context.isDarkMode ? Colors.transparent : Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -342,83 +359,198 @@ class _HomeScreenState extends State<HomeScreen> {
             // await sl<SharedPreferences>().setString("songs", jsonEncode(songs));
             // await sl<SharedPreferences>().setInt("index", index);
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (ctx) => AudioPlayerScreen(songs: songs, index: index),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (ctx) => AudioPlayerScreen(songs: songs, index: index),
+            //   ),
+            // );
           },
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(width: 10),
-                Image.network(
-                  songs[index].image,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      maxLines: 1,
-                      songs[index].title,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: context.isDarkMode ? Colors.white : Colors.black,
-                      ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.network(
+                songs[index].image,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    maxLines: 1,
+                    songs[index].title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: context.isDarkMode ? Colors.white : Colors.black,
                     ),
-                    Text(
-                      maxLines: 1,
-                      songs[index].artist,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: context.isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Text(
-                  songs[index].duration.toString(),
-                  style: TextStyle(
-                    color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
-                ),
-                SizedBox(width: 40),
-                // Icon(
-                //   Icons.favorite_border,
-                //   color: context.isDarkMode?Colors.white:Colors.black,
-                //   size: 20,
-                // ),
-                // SizedBox(width: 10),
-                Stack(
-                  children: <Widget>[
-                    Positioned.fill(
-                      child: Container(
-                        margin: EdgeInsets.all(10),
-                        // Modify this till it fills the color properly
-                        color: AppColors.darkGrey, // Color
-                      ),
+                  Text(
+                    maxLines: 1,
+                    songs[index].artist,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: context.isDarkMode ? Colors.white : Colors.black,
                     ),
-                    Icon(
-                      Icons.play_circle_rounded, // Icon
-                      color: AppColors.lightGrey,
-                      size: 35,
-                    ),
-                  ],
+                  ),
+                ],
+              ),
+              Spacer(),
+              Text(
+                songs[index].duration.toString(),
+                style: TextStyle(
+                  color: context.isDarkMode ? Colors.white : Colors.black,
                 ),
-              ],
-            ),
+              ),
+              SizedBox(width: 15),
+              // Icon(
+              //   Icons.favorite_border,
+              //   color: context.isDarkMode?Colors.white:Colors.black,
+              //   size: 20,
+              // ),
+              // SizedBox(width: 10),
+              Stack(
+                children: <Widget>[
+                  Positioned.fill(
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      // Modify this till it fills the color properly
+                      color: AppColors.darkGrey, // Color
+                    ),
+                  ),
+                  Icon(
+                    Icons.play_circle_rounded, // Icon
+                    color: AppColors.lightGrey,
+                    size: 35,
+                  ),
+                ],
+              ),
+              SizedBox(width: 10),
+              GestureDetector(
+                onTap: () {
+                  playlistBottomSheet();
+                },
+                child: Icon(
+                  Icons.add_circle_outline, // Icon
+                  color: Colors.black54,
+                  size: 20,
+                ),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  playlistBottomSheet() {
+    showBottomSheet(
+      elevation: 10,
+      context: context,
+      backgroundColor: Color(0xfffff6e9),
+      builder: (ctx) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.all(15),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 5),
+              Text(
+                "All Playlists",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+              ),
+              SizedBox(height: 200),
+              Material(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    newPlaylistDialog();
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.primary),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add, color: AppColors.primary),
+                        SizedBox(width: 5),
+                        Text(
+                          "Add New",
+                          style: TextStyle(color: AppColors.primary),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  newPlaylistDialog() {
+    playlistNameController.clear();
+    showDialog(
+      context: context,
+      builder:
+          (context) => Dialog(
+            child: BlocBuilder<AllSongsBloc, AllSongsState>(
+              builder: (context, state) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InputField(
+                        hint: "New Playlist Name",
+                        input: TextInputType.text,
+                        validator: null,
+                        autoFocus: true,
+                        controller: playlistNameController,
+                      ),
+                      SizedBox(height: 10),
+                      state.dialogLoading
+                          ? CircularProgressIndicator(color: AppColors.primary)
+                          : BasicTextButton(
+                            onPressed: () {
+                              if (playlistNameController.text.isEmpty) {
+                                Utils.showErrorSnackbar(
+                                  "Please enter playlist name",
+                                  context,
+                                );
+                              } else {
+                                sl<AllSongsBloc>().add(
+                                  CreateNewPlaylistEvent(
+                                    playlistNameController.text,
+                                  ),
+                                );
+                              }
+                            },
+                            title: 'Create',
+                          ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
     );
   }
 
