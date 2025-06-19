@@ -1,10 +1,10 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:music_app/data/models/playlistModel.dart';
 import 'package:music_app/data/models/song.dart';
+import 'package:music_app/domain/entities/song/addSong.dart';
 import 'package:music_app/domain/entities/song/playlist.dart';
 import 'package:music_app/domain/entities/song/song.dart';
 
@@ -23,9 +23,13 @@ abstract class SongFirebaseService {
 
   Future<Either> getPublicPlaylists();
 
+  Stream<List<Playlist>> getMyPlaylists();
+
   Future<Either> getPlaylistSongs(String playlistId);
 
   Future<Either> createNewPlaylist(String name);
+
+  Future<Either> addSongToPlaylist(String playlistId, String songID, bool add);
 }
 
 class SongFirebaseServiceImpl extends SongFirebaseService {
@@ -285,7 +289,10 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
 
     try {
       var playlists =
-          await FirebaseFirestore.instance.collection("Playlists").get();
+          await FirebaseFirestore.instance
+              .collection("Playlists")
+              .where("privacy", isEqualTo: "PUBLIC")
+              .get();
 
       for (var element in playlists.docs) {
         var playlistModel = PlaylistModel.fromJson(element.data());
@@ -311,6 +318,7 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
 
       await instance.add({
         "name": name,
+        "privacy": "PRIVATE",
         "added_by": FirebaseAuth.instance.currentUser?.uid ?? "",
       });
 
@@ -318,5 +326,71 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
     } on FirebaseException catch (e) {
       return Left("Something went wrong $e");
     }
+  }
+
+  @override
+  Future<Either> addSongToPlaylist(
+    String playlistId,
+    String songID,
+    bool add,
+  ) async {
+    try {
+      var instance = FirebaseFirestore.instance
+          .collection("Playlists")
+          .doc(playlistId)
+          .collection("songs");
+
+      if (add) {
+        debugPrint("ADD $playlistId $songID");
+      } else {
+        debugPrint("REMOVE $playlistId $songID");
+      }
+
+      if (add) {
+        await instance.add({"songId": songID});
+        return Right("Song Added");
+      } else {
+        var snap = await instance.where("songId", isEqualTo: songID).get();
+
+        if (snap.docs.isNotEmpty) {
+          await snap.docs[0].reference.delete();
+          return Right("Song Removed");
+        } else {
+          return Left("Song Not Found");
+        }
+      }
+    } on FirebaseException catch (e) {
+      return Left("Something went wrong $e");
+    }
+  }
+
+  @override
+  Stream<List<Playlist>> getMyPlaylists() {
+    var instance = FirebaseFirestore.instance
+        .collection("Playlists")
+        .where(
+          "added_by",
+          isEqualTo: FirebaseAuth.instance.currentUser?.uid ?? "",
+        );
+
+    return instance.snapshots().asyncMap((snapshot) async {
+      final futures =
+          snapshot.docs.map((doc) async {
+            final playlistId = doc.id;
+            final name = doc.data()['name'] ?? '';
+
+            // Get songs for each playlist
+            final songsSnap = await doc.reference.collection('songs').get();
+
+            final songs =
+                songsSnap.docs.map((songDoc) {
+                  return AddSong(songDoc['songId'], "", false);
+                }).toList();
+
+            return Playlist(name, "", doc.id, songs: songs);
+          }).toList();
+
+      return await Future.wait(futures);
+    });
   }
 }

@@ -11,9 +11,22 @@ class PublicPlaylistsEvent extends SongsEvent {}
 
 class MyPlaylistsEvent extends SongsEvent {}
 
-class CreateNewPlaylistEvent extends SongsEvent {
+class UpdateMyPlaylistsEvent extends SongsEvent {
+  final List<Playlist> playlists;
 
+  UpdateMyPlaylistsEvent(this.playlists);
+}
+
+class CreateNewPlaylistEvent extends SongsEvent {
   final String name;
 
   CreateNewPlaylistEvent(this.name);
+}
+
+class AddSongToPlaylistEvent extends SongsEvent {
+  final String playlistId;
+  final String songId;
+  final bool add;
+
+  AddSongToPlaylistEvent(this.playlistId, this.songId, this.add);
 }

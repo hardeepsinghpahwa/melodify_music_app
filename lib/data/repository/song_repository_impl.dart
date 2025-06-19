@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:music_app/data/datasources/song_firebase_service.dart';
 import 'package:music_app/domain/repositories/songRepo.dart';
 
+import '../../domain/entities/song/playlist.dart';
 import '../../services.dart';
 
 class SongRepositoryImpl extends SongRepository {
@@ -48,5 +49,15 @@ class SongRepositoryImpl extends SongRepository {
   @override
   Future<Either> createNewPlaylist(String name) {
     return sl<SongFirebaseService>().createNewPlaylist(name);
+  }
+
+  @override
+  Stream<List<Playlist>> getMyPlaylists() {
+    return sl<SongFirebaseService>().getMyPlaylists();
+  }
+
+  @override
+  Future<Either> addSongToPlaylist(String playlistId, String songID,bool add) {
+    return sl<SongFirebaseService>().addSongToPlaylist(playlistId,songID,add);
   }
 }

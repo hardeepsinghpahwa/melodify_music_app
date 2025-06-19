@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       sl<AllSongsBloc>().add(AllSongsLoadingEvent());
       sl<AllSongsBloc>().add(Top10SongsLoadingEvent());
       sl<AllSongsBloc>().add(PublicPlaylistsEvent());
+      sl<AllSongsBloc>().add(MyPlaylistsEvent());
     });
   }
 
@@ -40,10 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: BlocConsumer<AllSongsBloc, AllSongsState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state.msg.isNotEmpty) {
               Utils.showInfoSnackbar(state.msg, context);
-              state.copyWith(msg: "");
             }
           },
           builder: (context, state) {
@@ -431,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(width: 10),
               GestureDetector(
                 onTap: () {
-                  playlistBottomSheet();
+                  playlistBottomSheet(songs[index].id);
                 },
                 child: Icon(
                   Icons.add_circle_outline, // Icon
@@ -446,54 +446,97 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  playlistBottomSheet() {
-    showBottomSheet(
+  playlistBottomSheet(String id) {
+    showModalBottomSheet(
+      showDragHandle: true,
       elevation: 10,
       context: context,
-      backgroundColor: Color(0xfffff6e9),
+      backgroundColor: Colors.white,
       builder: (ctx) {
-        return Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(15),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 5),
-              Text(
-                "All Playlists",
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-              ),
-              SizedBox(height: 200),
-              Material(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-                child: InkWell(
-                  onTap: () {
-                    newPlaylistDialog();
-                  },
+        return SingleChildScrollView(
+          child: BlocBuilder<AllSongsBloc, AllSongsState>(
+            builder: (context, state) {
+              return Container(
+                clipBehavior: Clip.antiAlias,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppColors.primary),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.add, color: AppColors.primary),
-                        SizedBox(width: 5),
-                        Text(
-                          "Add New",
-                          style: TextStyle(color: AppColors.primary),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
-              ),
-              SizedBox(height: 20),
-            ],
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 5),
+                    Text(
+                      "Add to Playlist",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Builder(
+                      builder: (context) {
+                        if (state.loading == true) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          );
+                        }
+
+                        if ((state.myPlaylists ?? []).isNotEmpty) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: state.myPlaylists!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return addToPlaylistItem(
+                                state.myPlaylists!,
+                                index,
+                                songId: id,
+                              );
+                            },
+                          );
+                        }
+                        return SizedBox();
+                      },
+                    ),
+                    Material(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                      child: InkWell(
+                        onTap: () {
+                          newPlaylistDialog();
+                        },
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.primary),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.add, color: AppColors.primary),
+                              SizedBox(width: 5),
+                              Text(
+                                "Add New",
+                                style: TextStyle(color: AppColors.primary),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                  ],
+                ),
+              );
+            },
           ),
         );
       },
@@ -520,7 +563,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       InputField(
                         hint: "New Playlist Name",
-                        input: TextInputType.text,
+                        input: TextInputType.name,
                         validator: null,
                         autoFocus: true,
                         controller: playlistNameController,
@@ -556,9 +599,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget playlistItem(List<Playlist> playlists, int index) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20, bottom: 5),
+      padding: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
       child: Material(
-        color: context.isDarkMode ? Colors.grey : Colors.white,
+        color: context.isDarkMode ? Colors.grey : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
@@ -573,10 +616,134 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           child: Row(
             children: [
-              SizedBox(width: 10),
-              Image.network(playlists[index].image),
+              Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Image.network(
+                  playlists[index].image,
+                  errorBuilder: (ctx, obj, stk) {
+                    return Image.asset(
+                      AppImages.preview,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
+              ),
               SizedBox(width: 10),
               Text(playlists[index].name),
+              Spacer(),
+              SizedBox(width: 10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget addToPlaylistItem(
+    List<Playlist> playlists,
+    int index, {
+    String songId = "",
+  }) {
+    bool exists = (playlists[index].songs ?? []).any(
+      (val) => val.songId == songId,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+      child: Material(
+        color: context.isDarkMode ? Colors.grey : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          child: Row(
+            children: [
+              Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Image.network(
+                  playlists[index].image,
+                  errorBuilder: (ctx, obj, stk) {
+                    return Image.asset(
+                      AppImages.preview,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(playlists[index].name),
+                  Visibility(
+                    visible: exists,
+                    child: Row(
+                      children: [
+                        Text(
+                          "Song Added",
+                          style: TextStyle(fontSize: 10, color: Colors.grey),
+                        ),
+                        SizedBox(width: 5),
+                        Icon(Icons.check_circle, color: Colors.green, size: 15),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Spacer(),
+              BlocBuilder<AllSongsBloc, AllSongsState>(
+                builder: (context, state) {
+                  return (state.playlistLoader ?? []).contains(
+                        playlists[index].id,
+                      )
+                      ? SizedBox(
+                        width: 15,
+                        height: 15,
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                          strokeWidth: 1,
+                        ),
+                      )
+                      : GestureDetector(
+                        onTap: () {
+                          if (!exists) {
+                            sl<AllSongsBloc>().add(
+                              AddSongToPlaylistEvent(
+                                playlists[index].id,
+                                songId,
+                                true,
+                              ),
+                            );
+                          } else {
+                            sl<AllSongsBloc>().add(
+                              AddSongToPlaylistEvent(
+                                playlists[index].id,
+                                songId,
+                                false,
+                              ),
+                            );
+                          }
+                        },
+                        child: Icon(
+                          exists
+                              ? Icons.remove_circle_outline
+                              : Icons.add_circle,
+                          color: exists ? Colors.redAccent : Colors.green,
+                          size: 20,
+                        ),
+                      );
+                },
+              ),
+              SizedBox(width: 10),
             ],
           ),
         ),

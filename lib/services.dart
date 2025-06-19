@@ -6,11 +6,13 @@ import 'package:music_app/data/repository/auth_repository_impl.dart';
 import 'package:music_app/data/repository/song_repository_impl.dart';
 import 'package:music_app/domain/repositories/auth.dart';
 import 'package:music_app/domain/repositories/songRepo.dart';
+import 'package:music_app/domain/usecases/addSongToPlaylistUseCase.dart';
 import 'package:music_app/domain/usecases/checkFavouriteUseCase.dart';
 import 'package:music_app/domain/usecases/createNewPlaylistUseCase.dart';
 import 'package:music_app/domain/usecases/favouriteUseCase.dart';
 import 'package:music_app/domain/usecases/geAllSongsUseCase.dart';
 import 'package:music_app/domain/usecases/getFavouritesUseCase.dart';
+import 'package:music_app/domain/usecases/getMyPlaylistsUseCase.dart';
 import 'package:music_app/domain/usecases/getPublicPlaylistsUseCase.dart';
 import 'package:music_app/domain/usecases/getTopSongsUseCase.dart';
 import 'package:music_app/domain/usecases/getUseDetailsUseCase.dart';
@@ -87,6 +89,10 @@ Future<void> initDependencies() async {
   sl.registerSingleton<PlaylistDetailsBloc>(PlaylistDetailsBloc());
 
   sl.registerSingleton<CreateNewPlaylistUseCase>(CreateNewPlaylistUseCase());
+
+  sl.registerSingleton<GetMyPlaylistsUseCase>(GetMyPlaylistsUseCase());
+
+  sl.registerSingleton<AddSongToPlaylistUseCase>(AddSongToPlaylistUseCase());
 
 
 }

@@ -39,19 +39,52 @@ class Utils {
   }
 
   static showInfoSnackbar(String title, BuildContext context) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    var snackBar = SnackBar(
-      dismissDirection: DismissDirection.up,
-      content: Text(title),
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: AppColors.darkGrey,
-      margin: EdgeInsets.only(
-        bottom: MediaQuery.of(context).size.height - 120,
-        left: 10,
-        right: 10,
-      ),
+    // ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    // var snackBar = SnackBar(
+    //   dismissDirection: DismissDirection.up,
+    //   content: Text(title),
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: AppColors.darkGrey,
+    //   margin: EdgeInsets.only(
+    //     bottom: MediaQuery.of(context).size.height - 120,
+    //     left: 10,
+    //     right: 10,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    final overlay = Overlay.of(context, rootOverlay: true);
+
+    final overlayEntry = OverlayEntry(
+      builder:
+          (context) => Positioned(
+            top: MediaQuery.of(context).viewPadding.top + 12,
+            left: 16,
+            right: 16,
+            child: Material(
+              elevation: 30, // high elevation to appear over dialogs/app bar
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  title,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ),
+          ),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    overlay.insert(overlayEntry);
+
+    Future.delayed(
+      const Duration(seconds: 3),
+    ).then((_) => overlayEntry.remove());
   }
 
   static showBottomDialog(String title, BuildContext context) {
@@ -80,9 +113,7 @@ class Utils {
                     children: [
                       SizedBox(width: 10),
                       Expanded(
-                        child: SmallButton(onPressed: () {
-
-                        }, title: "Yes"),
+                        child: SmallButton(onPressed: () {}, title: "Yes"),
                       ),
                       SizedBox(width: 10),
                       Expanded(
