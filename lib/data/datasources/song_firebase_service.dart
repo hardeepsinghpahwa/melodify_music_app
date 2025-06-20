@@ -248,15 +248,21 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
       final titleResults =
           FirebaseFirestore.instance
               .collection("Songs")
-              .where('artist', isGreaterThanOrEqualTo: searchText)
-              .where('artist', isLessThanOrEqualTo: '$searchText\uf8ff')
+              .orderBy("artist")
+              //.where('artist', isGreaterThanOrEqualTo: searchText)
+              //.where('artist', isLessThanOrEqualTo: '$searchText\uf8ff')
+              .startAt([searchText])
+              .endAt(['$searchText\uf8ff'])
               .get();
 
       final artistResults =
           FirebaseFirestore.instance
               .collection("Songs")
-              .where('title', isGreaterThanOrEqualTo: searchText)
-              .where('title', isLessThanOrEqualTo: '$searchText\uf8ff')
+              .orderBy("title")
+              //.where('title', isGreaterThanOrEqualTo: searchText)
+              //.where('title', isLessThanOrEqualTo: '$searchText\uf8ff')
+              .startAt([searchText])
+              .endAt(['$searchText\uf8ff'])
               .get();
 
       final allResults = await Future.wait([titleResults, artistResults]);
@@ -278,7 +284,7 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
       }
 
       return Right(songs);
-    } on FirebaseException catch (e) {
+    } on Exception catch (e) {
       return Left("Something went wrong");
     }
   }
@@ -320,6 +326,7 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
         "name": name,
         "privacy": "PRIVATE",
         "added_by": FirebaseAuth.instance.currentUser?.uid ?? "",
+        "creation_date": DateTime.now().millisecondsSinceEpoch,
       });
 
       return Right("");

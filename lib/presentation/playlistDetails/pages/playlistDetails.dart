@@ -55,12 +55,16 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
                       Center(
                         child: Stack(
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8),
+                            Container(
+                              width: 100,
+                              height: 100,
+                              clipBehavior: Clip.antiAlias,
+                              margin: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                               child: Image.network(
                                 widget.playlistDetails.image,
-                                width: 100,
-                                height: 100,
                               ),
                             ),
                             Positioned(

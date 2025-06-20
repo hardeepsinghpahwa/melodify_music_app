@@ -45,6 +45,12 @@ class _HomeScreenState extends State<HomeScreen> {
             if (state.msg.isNotEmpty) {
               Utils.showInfoSnackbar(state.msg, context);
             }
+
+            // if(state.backPress){
+            //   if(context.mounted){
+            //     Navigator.pop(context);
+            //   }
+            // }
           },
           builder: (context, state) {
             return Padding(
@@ -116,10 +122,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      "Playlists",
+                      "Trending Playlists",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 16,
                         color: context.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
@@ -159,10 +165,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      "Top 10",
+                      "Top 10 Songs",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 16,
                         color: context.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
@@ -195,10 +201,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 30),
                     Text(
-                      "Popular",
+                      "Popular and Trending",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 16,
                         color: context.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
@@ -622,13 +628,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Image.network(
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
                   playlists[index].image,
                   errorBuilder: (ctx, obj, stk) {
-                    return Image.asset(
-                      AppImages.preview,
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
+                    return Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(color: AppColors.primary),
+                      child: Icon(
+                        Icons.music_note_outlined,
+                        color: Colors.white,
+                      ),
                     );
                   },
                 ),
@@ -669,12 +681,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Image.network(
                   playlists[index].image,
+                  width: 50,
+                  height: 50,
                   errorBuilder: (ctx, obj, stk) {
-                    return Image.asset(
-                      AppImages.preview,
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
+                    return Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(color: AppColors.primary),
+                      child: Icon(
+                        Icons.queue_music_outlined,
+                        size: 40,
+                        color: Colors.white,
+                      ),
                     );
                   },
                 ),

@@ -254,8 +254,9 @@ class Dashboard extends StatelessWidget {
               SizedBox(height: 10),
               SvgPicture.asset(
                 icon,
-                width: 25,
+                width: 10,
                 height: 25,
+                fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
                   valueState == state ? AppColors.primary : Colors.grey,
                   BlendMode.srcIn,

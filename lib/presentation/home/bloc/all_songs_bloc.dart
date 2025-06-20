@@ -125,12 +125,10 @@ class AllSongsBloc extends Bloc<SongsEvent, AllSongsState> {
           loaders.remove(event.playlistId);
           emit(
             state.copyWith(
-              msg: ifRight,
               dialogLoading: false,
               playlistLoader: loaders,
             ),
           );
-          emit(state.copyWith(msg: ""));
           add(MyPlaylistsEvent());
         },
       );

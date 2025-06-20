@@ -5,6 +5,7 @@ import 'package:music_app/presentation/explore/bloc/explore_bloc.dart';
 
 import '../../../common/widgets/loader.dart';
 import '../../../common/widgets/searchField.dart';
+import '../../../core/configs/assets/app_images.dart';
 import '../../../core/configs/theme/app_colors.dart';
 import '../../../domain/entities/song/song.dart';
 import '../../../services.dart';
@@ -28,18 +29,28 @@ class ExploreScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 10),
-                    Text(
-                      "Search",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: context.isDarkMode ? Colors.white : Colors.black,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "What are you in mood for?",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color:
+                                context.isDarkMode
+                                    ? Colors.white
+                                    : Colors.black,
+                          ),
+                        ),
+                        Spacer(),
+                        Image.asset(AppImages.logo, width: 40),
+                      ],
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
 
                     SearchInputField(
-                      hint: "What song are you looking for?",
+                      hint: "Search for songs, playlists, artists",
                       input: TextInputType.text,
                       controller: searchController,
                       validator: (val) {
@@ -51,7 +62,7 @@ class ExploreScreen extends StatelessWidget {
                         }
                       },
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 20),
                     Expanded(
                       child: ListView.builder(
                         itemBuilder: (context, index) {

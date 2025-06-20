@@ -12,3 +12,22 @@ class MarkFavouriteEvent extends FavouritesEvent {
 
 class GetAllFavouritesEvent extends FavouritesEvent {
 }
+
+class CreateNewPlaylistEvent extends FavouritesEvent {
+  final String name;
+
+  CreateNewPlaylistEvent(this.name);
+}
+
+
+class GetMyPlaylistsEvent extends FavouritesEvent {
+}
+
+class ResetEvents extends FavouritesEvent {
+}
+
+class UpdateMyPlaylistsEvent extends FavouritesEvent {
+  final List<Playlist> playlists;
+
+  UpdateMyPlaylistsEvent(this.playlists);
+}

@@ -19,15 +19,18 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
 
       emit(state.copyWith(loading: true));
 
-      var data= await sl<SearchSongUseCase>().call(params: event.searchText);
+      try {
+        var data = await sl<SearchSongUseCase>().call(params: event.searchText);
+        data.fold((ifLeft){
+          emit(state.copyWith(loading: false));
+        }, (ifRight){
+          emit(state.copyWith(filteredSongs: ifRight,loading: false));
+        });
 
-      data.fold((ifLeft){
-
-      }, (ifRight){
-        emit(state.copyWith(filteredSongs: ifRight));
-      });
-
-      emit(state.copyWith(loading: false));
+      }on Exception catch (e){
+        emit(state.copyWith(loading: false));
+        print("ERRRRRR $e");
+      }
 
     });
   }
