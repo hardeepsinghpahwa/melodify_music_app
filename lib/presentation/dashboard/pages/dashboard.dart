@@ -10,7 +10,6 @@ import 'package:music_app/presentation/explore/pages/explore.dart';
 import 'package:music_app/presentation/favourites/pages/favourites.dart';
 import 'package:music_app/presentation/home/pages/home.dart';
 import 'package:music_app/presentation/player/bloc/player_position/player_position_bloc.dart';
-import 'package:music_app/presentation/playlistDetails/pages/playlistDetails.dart';
 import 'package:music_app/presentation/profile/pages/profile_screen.dart';
 
 import '../../../services.dart';

@@ -11,6 +11,7 @@ import '../../../common/widgets/text_button.dart';
 import '../../../core/configs/theme/app_colors.dart';
 import '../../../domain/entities/song/playlist.dart';
 import '../../../services.dart';
+import '../../playlistDetails/pages/playlistDetails.dart';
 
 class FavouritesScreen extends StatefulWidget {
   const FavouritesScreen({super.key});
@@ -193,6 +194,15 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
+          onTap: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (ctx) => PlaylistDetails(playlistDetails: playlist,favourites: isFav,),
+              ),
+            );
+          },
           child: Row(
             children: [
               Container(

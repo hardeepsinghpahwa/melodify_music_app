@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:music_app/domain/entities/song/song.dart';
 import 'package:music_app/domain/usecases/getPlaylistSongsUseCase.dart';
 
+import '../../../domain/usecases/getFavouritesUseCase.dart';
 import '../../../services.dart';
 
 part 'playlist_details_event.dart';
@@ -25,5 +26,22 @@ class PlaylistDetailsBloc
         },
       );
     });
+
+    on<GetAllFavouritesEvent>((event, emit) async {
+      emit(state.copyWith(loading: true));
+
+      var data = await sl<GetAllFavouriteSongs>().call();
+
+      data.fold(
+            (ifLeft) {
+          emit(state.copyWith(loading: false, songs: []));
+        },
+            (ifRight) {
+          emit(state.copyWith(loading: false, songs: ifRight));
+        },
+      );
+    });
   }
+
+
 }

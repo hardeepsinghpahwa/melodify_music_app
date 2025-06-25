@@ -8,6 +8,7 @@ class SearchInputField extends StatelessWidget {
   final bool obscure;
   final TextEditingController controller;
   final Function(String)? onSubmit;
+  final FocusNode? focusNode;
 
   const SearchInputField({
     required this.hint,
@@ -17,6 +18,7 @@ class SearchInputField extends StatelessWidget {
     this.obscure = false,
     required this.controller,
     this.onSubmit,
+    this.focusNode,
   });
 
   @override
@@ -33,6 +35,7 @@ class SearchInputField extends StatelessWidget {
         ],
       ),
       child: TextFormField(
+        focusNode: focusNode,
         validator: validator,
         onFieldSubmitted: onSubmit,
         cursorColor: AppColors.primary,

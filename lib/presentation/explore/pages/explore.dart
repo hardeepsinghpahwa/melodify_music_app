@@ -18,77 +18,182 @@ class ExploreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<ExploreBloc, ExploreState>(
-        builder: (context, state) {
-          return Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 10),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "What are you in mood for?",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color:
-                                context.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                          ),
-                        ),
-                        Spacer(),
-                        Image.asset(AppImages.logo, width: 40),
-                      ],
-                    ),
-                    SizedBox(height: 15),
+    FocusNode searchFocusNode = FocusNode();
 
-                    SearchInputField(
-                      hint: "Search for songs, playlists, artists",
-                      input: TextInputType.text,
-                      controller: searchController,
-                      validator: (val) {
-                        return null;
-                      },
-                      onSubmit: (searchText) {
-                        if (searchText.isNotEmpty) {
-                          sl<ExploreBloc>().add(SearchEvent(searchText));
-                        }
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return searchItem(
-                            state.filteredSongs ?? [],
-                            index,
-                            context,
-                          );
-                        },
-                        itemCount: (state.filteredSongs ?? []).length,
+    searchFocusNode.addListener(() {
+      if (searchFocusNode.hasFocus) {
+        debugPrint("CHANGE FOCUS TRUE");
+        sl<ExploreBloc>().add(ChangeSearchFocusEvent(true));
+      } else {
+        debugPrint("CHANGE FOCUS FALSE");
+        sl<ExploreBloc>().add(ChangeSearchFocusEvent(false));
+      }
+    });
+
+    sl<ExploreBloc>().add(RecentSearchesEvent());
+
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Scaffold(
+        body: BlocBuilder<ExploreBloc, ExploreState>(
+          builder: (context, state) {
+            return Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "What are you in mood for?",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  context.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                            ),
+                          ),
+                          Spacer(),
+                          Image.asset(AppImages.logo, width: 40),
+                        ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 15),
+
+                      SearchInputField(
+                        hint: "Search for songs, playlists, artists",
+                        input: TextInputType.text,
+                        controller: searchController,
+                        validator: (val) {
+                          return null;
+                        },
+                        focusNode: searchFocusNode,
+                        onSubmit: (searchText) {
+                          if (searchText.isNotEmpty) {
+                            searchFocusNode.unfocus();
+                            sl<ExploreBloc>().add(SearchEvent(searchText));
+                          }
+                        },
+                      ),
+                      SizedBox(height: 20),
+
+                      state.searchFocus || (state.filteredSongs??[]).isEmpty
+                          ? Column(
+                            children: [
+                              (state.recentSearches ?? []).isNotEmpty
+                                  ? Column(
+                                    children: [
+                                      Text("RECENT SEARCHES"),
+                                      SizedBox(height: 10),
+                                      SizedBox(
+                                        height: 25,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (ctx, index) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                sl<ExploreBloc>().add(
+                                                  SearchEvent(
+                                                    state
+                                                        .recentSearches![index],
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                height: 25,
+                                                margin: EdgeInsets.symmetric(
+                                                  horizontal: 5,
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 5,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 0.5,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: Row(
+                                                    children: [
+                                                      SizedBox(width: 5),
+                                                      Text(
+                                                        state
+                                                            .recentSearches![index],
+                                                        style: TextStyle(
+                                                          color:
+                                                              AppColors.primary,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 5),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          sl<ExploreBloc>().add(
+                                                            RemoveRecentSearchEvent(
+                                                              state
+                                                                  .recentSearches![index],
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: Icon(
+                                                          Icons.clear,
+                                                          size: 15,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          itemCount:
+                                              (state.recentSearches ?? [])
+                                                  .length,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                  : SizedBox(),
+                              SizedBox(height: 10),
+                            ],
+                          )
+                          : Expanded(
+                            child: ListView.builder(
+                              itemBuilder: (context, index) {
+                                return searchItem(
+                                  state.filteredSongs ?? [],
+                                  index,
+                                  context,
+                                );
+                              },
+                              itemCount: (state.filteredSongs ?? []).length,
+                            ),
+                          ),
+                    ],
+                  ),
                 ),
-              ),
-              Visibility(visible: state.loading, child: Loader()),
-            ],
-          );
-        },
+                Visibility(visible: state.loading, child: Loader()),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 
   Widget searchItem(List<SongEntity> songs, int index, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20, bottom: 5),
+      padding: const EdgeInsets.only( bottom: 5),
       child: Material(
         color: context.isDarkMode ? Colors.transparent : Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -147,13 +252,7 @@ class ExploreScreen extends StatelessWidget {
                     color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
                 ),
-                SizedBox(width: 40),
-                Icon(
-                  Icons.favorite_border,
-                  color: context.isDarkMode ? Colors.white : Colors.black,
-                  size: 20,
-                ),
-                SizedBox(width: 10),
+                SizedBox(width: 20),
                 Stack(
                   children: <Widget>[
                     Positioned.fill(
@@ -170,6 +269,7 @@ class ExploreScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(width: 5),
               ],
             ),
           ),

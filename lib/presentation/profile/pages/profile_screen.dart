@@ -9,6 +9,7 @@ import 'package:music_app/presentation/profile/bloc/profile_bloc.dart';
 
 import '../../../common/widgets/loader.dart';
 import '../../../common/widgets/text_button.dart';
+import '../../../core/configs/assets/app_images.dart';
 import '../../../services.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -52,16 +53,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(height: 10),
-                          Text(
-                            "Profile",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color:
-                                  context.isDarkMode
-                                      ? Colors.white
-                                      : Colors.black,
-                            ),
+                          Row(
+                            children: [
+                              SizedBox(width: 15),
+                              Text(
+                                "Profile",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      context.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black,
+                                ),
+                              ),
+                              Spacer(),
+                              Image.asset(AppImages.logo, width: 40),
+                              SizedBox(width: 10),
+                            ],
                           ),
                           SizedBox(height: 20),
                           Container(
@@ -106,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               );
                             },
                             title: "Logout",
-                            color: Colors.black,
+                            color: Colors.red,
                           ),
                           SizedBox(height: 20),
                         ],

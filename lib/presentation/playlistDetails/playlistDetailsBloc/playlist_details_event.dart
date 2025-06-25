@@ -8,3 +8,6 @@ class LoadPlaylistSongs extends PlaylistDetailsEvent{
 
   LoadPlaylistSongs(this.playlistId);
 }
+
+class GetAllFavouritesEvent extends PlaylistDetailsEvent {
+}
